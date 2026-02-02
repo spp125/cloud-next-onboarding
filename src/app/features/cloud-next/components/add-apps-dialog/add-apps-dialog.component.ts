@@ -222,12 +222,9 @@ interface SelectedApp {
               }
             </div>
           } @else {
-            <div class="text-center py-8">
-              <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/60 border border-gray-200 flex items-center justify-center">
-                <mat-icon class="!text-3xl text-gray-400">playlist_add</mat-icon>
-              </div>
-              <p class="text-gray-500 text-sm">No apps selected yet</p>
-              <p class="text-gray-400 text-xs mt-1">Search and add apps above</p>
+            <div class="flex items-center gap-3 py-2">
+              <mat-icon class="text-gray-400">info_outline</mat-icon>
+              <p class="text-gray-500 text-sm">No apps selected. Search or paste App IDs above to add.</p>
             </div>
           }
         </div>

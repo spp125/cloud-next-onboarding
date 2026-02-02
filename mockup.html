@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Next Onboarding - Mockup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a1a1a1;
+    }
+
+    /* Expandable row animation */
+    .metadata-row {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+    .metadata-row.expanded {
+      max-height: 500px;
+    }
+
+    /* Dialog backdrop */
+    .dialog-backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Stat card hover */
+    .stat-card {
+      transition: all 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .stat-card.active {
+      ring: 2px;
+      ring-offset: 2px;
+    }
+
+    /* Action button hover */
+    .action-btn {
+      transition: all 0.2s ease;
+    }
+    .action-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto p-6">
+
+    <!-- Page Header -->
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">Cloud Next Onboarding</h1>
+      <p class="text-gray-600">Manage application migration to cloud infrastructure</p>
+    </div>
+
+    <!-- ================================ -->
+    <!-- SECTION 1: STATS & ACTIONS CARD -->
+    <!-- ================================ -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-4">
+      <h2 class="text-lg font-semibold text-gray-700 mb-4">Cloud Next Overview</h2>
+
+      <!-- Stats Row -->
+      <div class="flex flex-wrap gap-4 mb-6">
+        <!-- Total CN Apps -->
+        <div class="stat-card active flex-1 min-w-[140px] bg-blue-50 border-t-4 border-blue-500 rounded-lg p-4 cursor-pointer hover:bg-blue-100 ring-2 ring-blue-500 ring-offset-2">
+          <div class="text-3xl font-bold text-gray-900">125</div>
+          <div class="text-sm text-gray-600 mt-1">Total CN Apps</div>
+        </div>
+
+        <!-- Not Initialized -->
+        <div class="stat-card flex-1 min-w-[140px] bg-gray-50 border-t-4 border-gray-400 rounded-lg p-4 cursor-pointer hover:bg-gray-100">
+          <div class="text-3xl font-bold text-gray-900">82</div>
+          <div class="text-sm text-gray-600 mt-1">Not Initialized</div>
+        </div>
+
+        <!-- In Dev -->
+        <div class="stat-card flex-1 min-w-[140px] bg-amber-50 border-t-4 border-amber-500 rounded-lg p-4 cursor-pointer hover:bg-amber-100">
+          <div class="text-3xl font-bold text-gray-900">20</div>
+          <div class="text-sm text-gray-600 mt-1">In Dev</div>
+        </div>
+
+        <!-- In Stage -->
+        <div class="stat-card flex-1 min-w-[140px] bg-purple-50 border-t-4 border-purple-500 rounded-lg p-4 cursor-pointer hover:bg-purple-100">
+          <div class="text-3xl font-bold text-gray-900">15</div>
+          <div class="text-sm text-gray-600 mt-1">In Stage</div>
+        </div>
+
+        <!-- In Prod -->
+        <div class="stat-card flex-1 min-w-[140px] bg-green-50 border-t-4 border-green-500 rounded-lg p-4 cursor-pointer hover:bg-green-100">
+          <div class="text-3xl font-bold text-gray-900">8</div>
+          <div class="text-sm text-gray-600 mt-1">In Prod</div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-gray-200 my-4"></div>
+
+      <!-- Actions Row -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Add Apps -->
+        <button onclick="openAddAppsDialog()" class="action-btn inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+          <span class="material-icons text-xl">add</span>
+          Add Apps
+        </button>
+
+        <!-- Initialize App -->
+        <button class="action-btn inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 hover:border-blue-500 hover:bg-blue-50 text-gray-700 rounded-lg font-medium transition-colors">
+          <span class="material-icons text-xl">play_arrow</span>
+          Initialize
+        </button>
+
+        <!-- Prepare for Dev -->
+        <button disabled class="action-btn inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-400 rounded-lg font-medium cursor-not-allowed">
+          <span class="material-icons text-xl">build</span>
+          Prepare for Dev
+        </button>
+
+        <!-- Prepare for Stage -->
+        <button disabled class="action-btn inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-400 rounded-lg font-medium cursor-not-allowed">
+          <span class="material-icons text-xl">inventory_2</span>
+          Prepare for Stage
+        </button>
+
+        <!-- Prepare for Prod -->
+        <button disabled class="action-btn inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-400 rounded-lg font-medium cursor-not-allowed">
+          <span class="material-icons text-xl">rocket_launch</span>
+          Prepare for Prod
+        </button>
+
+        <!-- Selection Info -->
+        <div class="ml-auto text-sm text-gray-600">
+          <span class="font-medium">Selected:</span> 3 apps (3 New)
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================= -->
+    <!-- SECTION 3: APPS TABLE   -->
+    <!-- ======================= -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+
+      <!-- Table Header with Search -->
+      <div class="p-4 border-b border-gray-200">
+        <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <h2 class="text-lg font-semibold text-gray-700">Applications</h2>
+
+          <!-- Search Input -->
+          <div class="relative w-full sm:w-64">
+            <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
+            <input
+              type="text"
+              placeholder="Search apps..."
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="w-12 px-4 py-3">
+                <input type="checkbox" class="w-4 h-4 rounded border-gray-300">
+              </th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">App ID</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">App Name</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Owner</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Unity Project</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Metadata</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+              <th class="w-12 px-4 py-3"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+
+            <!-- Row 1 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3">
+                <input type="checkbox" checked class="w-4 h-4 rounded border-gray-300">
+              </td>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">APP001</td>
+              <td class="px-4 py-3 text-sm text-gray-700">Payment Service</td>
+              <td class="px-4 py-3 text-sm text-gray-700">Karen Smith</td>
+              <td class="px-4 py-3 text-sm text-gray-700">proj-payments</td>
+              <td class="px-4 py-3">
+                <button onclick="toggleMetadata('row1')" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                  <span class="material-icons text-lg">visibility</span>
+                  View
+                </button>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                  In Dev
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <button onclick="toggleMetadata('row1')" class="text-gray-400 hover:text-gray-600">
+                  <span class="material-icons" id="row1-icon">expand_more</span>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 1 Expanded Metadata -->
+            <tr id="row1-metadata" class="metadata-row">
+              <td colspan="8" class="px-4 py-0 bg-gray-50">
+                <div class="py-4">
+                  <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-semibold text-gray-700">Metadata</h4>
+                    <button onclick="openEditMetadataDialog()" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                      <span class="material-icons text-lg">edit</span>
+                      Edit
+                    </button>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Unity Project</div>
+                      <div class="text-sm text-gray-900">proj-payments</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Shared Account</div>
+                      <div class="text-sm text-gray-900">Yes</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Environment Type</div>
+                      <div class="text-sm text-gray-900">NP</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS Region</div>
+                      <div class="text-sm text-gray-900">us-east-1</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS Dev Account</div>
+                      <div class="text-sm text-gray-900">shared-dev-001</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS QA Account</div>
+                      <div class="text-sm text-gray-900">shared-qa-001</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS Prod Account</div>
+                      <div class="text-sm text-gray-900">shared-prod-001</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">CIOR Size</div>
+                      <div class="text-sm text-gray-900">Small</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">OU</div>
+                      <div class="text-sm text-gray-900">default</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Deployers</div>
+                      <div class="text-sm text-gray-900">user1, user2</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Contributors</div>
+                      <div class="text-sm text-gray-900">user3, user4, user5</div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Row 2 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3">
+                <input type="checkbox" checked class="w-4 h-4 rounded border-gray-300">
+              </td>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">APP002</td>
+              <td class="px-4 py-3 text-sm text-gray-700">User Auth Service</td>
+              <td class="px-4 py-3 text-sm text-gray-700">John Doe</td>
+              <td class="px-4 py-3 text-sm text-gray-500">—</td>
+              <td class="px-4 py-3">
+                <button onclick="toggleMetadata('row2')" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                  <span class="material-icons text-lg">visibility</span>
+                  View
+                </button>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                  New
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <button onclick="toggleMetadata('row2')" class="text-gray-400 hover:text-gray-600">
+                  <span class="material-icons" id="row2-icon">expand_more</span>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 2 Expanded Metadata (with missing data) -->
+            <tr id="row2-metadata" class="metadata-row">
+              <td colspan="8" class="px-4 py-0 bg-gray-50">
+                <div class="py-4">
+                  <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-semibold text-gray-700">Metadata</h4>
+                    <button onclick="openEditMetadataDialog()" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                      <span class="material-icons text-lg">edit</span>
+                      Edit
+                    </button>
+                  </div>
+                  <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3">
+                    <div class="flex items-center gap-2 text-amber-800">
+                      <span class="material-icons text-lg">warning</span>
+                      <span class="text-sm font-medium">Missing required fields: Unity Project, AWS Region, AWS Accounts</span>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Unity Project</div>
+                      <div class="text-sm text-red-500 flex items-center gap-1">
+                        <span class="material-icons text-sm">error</span>
+                        Not set
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Shared Account</div>
+                      <div class="text-sm text-gray-400">—</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Environment Type</div>
+                      <div class="text-sm text-gray-400">—</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS Region</div>
+                      <div class="text-sm text-red-500 flex items-center gap-1">
+                        <span class="material-icons text-sm">error</span>
+                        Not set
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS Dev Account</div>
+                      <div class="text-sm text-red-500 flex items-center gap-1">
+                        <span class="material-icons text-sm">error</span>
+                        Not set
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS QA Account</div>
+                      <div class="text-sm text-red-500 flex items-center gap-1">
+                        <span class="material-icons text-sm">error</span>
+                        Not set
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Row 3 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3">
+                <input type="checkbox" checked class="w-4 h-4 rounded border-gray-300">
+              </td>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">APP003</td>
+              <td class="px-4 py-3 text-sm text-gray-700">Notification Engine</td>
+              <td class="px-4 py-3 text-sm text-gray-700">Sarah Wilson</td>
+              <td class="px-4 py-3 text-sm text-gray-700">proj-notifications</td>
+              <td class="px-4 py-3">
+                <button onclick="toggleMetadata('row3')" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                  <span class="material-icons text-lg">visibility</span>
+                  View
+                </button>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                  New
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <button onclick="toggleMetadata('row3')" class="text-gray-400 hover:text-gray-600">
+                  <span class="material-icons" id="row3-icon">expand_more</span>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 3 Expanded Metadata -->
+            <tr id="row3-metadata" class="metadata-row">
+              <td colspan="8" class="px-4 py-0 bg-gray-50">
+                <div class="py-4">
+                  <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-semibold text-gray-700">Metadata</h4>
+                    <button onclick="openEditMetadataDialog()" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                      <span class="material-icons text-lg">edit</span>
+                      Edit
+                    </button>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Unity Project</div>
+                      <div class="text-sm text-gray-900">proj-notifications</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Shared Account</div>
+                      <div class="text-sm text-gray-900">No</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">Environment Type</div>
+                      <div class="text-sm text-gray-900">PROD</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS Region</div>
+                      <div class="text-sm text-gray-900">us-west-2</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS Dev Account</div>
+                      <div class="text-sm text-gray-900">notif-dev-001</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS QA Account</div>
+                      <div class="text-sm text-gray-900">notif-qa-001</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">AWS Prod Account</div>
+                      <div class="text-sm text-gray-900">notif-prod-001</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">CIOR Size</div>
+                      <div class="text-sm text-gray-900">Medium</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500 uppercase">OU</div>
+                      <div class="text-sm text-gray-900">engineering</div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Row 4 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3">
+                <input type="checkbox" class="w-4 h-4 rounded border-gray-300">
+              </td>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">APP004</td>
+              <td class="px-4 py-3 text-sm text-gray-700">Analytics Dashboard</td>
+              <td class="px-4 py-3 text-sm text-gray-700">Mike Johnson</td>
+              <td class="px-4 py-3 text-sm text-gray-700">proj-analytics</td>
+              <td class="px-4 py-3">
+                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                  <span class="material-icons text-lg">visibility</span>
+                  View
+                </button>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  In Stage
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <button class="text-gray-400 hover:text-gray-600">
+                  <span class="material-icons">expand_more</span>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 5 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3">
+                <input type="checkbox" class="w-4 h-4 rounded border-gray-300">
+              </td>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">APP005</td>
+              <td class="px-4 py-3 text-sm text-gray-700">Inventory Manager</td>
+              <td class="px-4 py-3 text-sm text-gray-700">Lisa Chen</td>
+              <td class="px-4 py-3 text-sm text-gray-700">proj-inventory</td>
+              <td class="px-4 py-3">
+                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                  <span class="material-icons text-lg">visibility</span>
+                  View
+                </button>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  In Prod
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <button class="text-gray-400 hover:text-gray-600">
+                  <span class="material-icons">expand_more</span>
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="px-4 py-3 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-600">
+          Showing 1-5 of 125 apps
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-600">Rows per page:</span>
+          <select class="border border-gray-300 rounded px-2 py-1 text-sm">
+            <option>10</option>
+            <option>25</option>
+            <option>50</option>
+          </select>
+          <div class="flex gap-1 ml-4">
+            <button class="p-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>
+              <span class="material-icons">chevron_left</span>
+            </button>
+            <button class="p-1 rounded hover:bg-gray-100">
+              <span class="material-icons">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================= -->
+  <!-- ADD APPS DIALOG           -->
+  <!-- ========================= -->
+  <div id="addAppsDialog" class="fixed inset-0 z-50 hidden">
+    <div class="dialog-backdrop absolute inset-0" onclick="closeAddAppsDialog()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+
+      <!-- Dialog Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 flex-shrink-0">
+        <h3 class="text-lg font-semibold text-gray-900">Add Apps to Cloud Next</h3>
+        <button onclick="closeAddAppsDialog()" class="text-gray-400 hover:text-gray-600">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <!-- Dialog Content -->
+      <div class="p-6 overflow-y-auto flex-1">
+
+        <!-- Textarea for App IDs -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Enter App IDs
+          </label>
+          <div class="flex gap-2">
+            <textarea
+              id="appIdsTextarea"
+              rows="3"
+              placeholder="APP001, APP002, APP003..."
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            ></textarea>
+            <button onclick="addFromTextarea()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors self-end">
+              Add
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">Comma, tab, or newline separated</p>
+        </div>
+
+        <!-- Divider with OR -->
+        <div class="flex items-center gap-4 my-5">
+          <div class="flex-1 border-t border-gray-300"></div>
+          <span class="text-gray-400 text-sm font-medium">OR</span>
+          <div class="flex-1 border-t border-gray-300"></div>
+        </div>
+
+        <!-- Search Input -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Search for apps
+          </label>
+          <div class="relative">
+            <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
+            <input
+              id="appSearchInput"
+              type="text"
+              placeholder="Search by app ID or app name..."
+              oninput="handleSearch(this.value)"
+              class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+            <!-- Loading Spinner -->
+            <div id="searchSpinner" class="hidden absolute right-3 top-1/2 -translate-y-1/2">
+              <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </div>
+            <!-- Clear Button -->
+            <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              <span class="material-icons text-xl">close</span>
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">Type at least 2 characters to search</p>
+        </div>
+
+        <!-- Search Results Section -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-sm font-medium text-gray-700">Search Results</label>
+            <span id="resultCount" class="text-xs text-gray-500">4 apps found</span>
+          </div>
+
+          <!-- Results List -->
+          <div id="searchResults" class="border border-gray-300 rounded-lg max-h-48 overflow-y-auto">
+            <table class="w-full">
+              <tbody class="divide-y divide-gray-200">
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-2">
+                    <span class="text-sm font-medium text-gray-900">APP010</span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="text-sm text-gray-600">Compass Service</span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="text-xs text-gray-500">John Smith</span>
+                  </td>
+                  <td class="px-4 py-2 text-right">
+                    <button onclick="addToSelection('APP010', 'Compass Service', 'John Smith')" class="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors">
+                      <span class="material-icons text-lg">add</span>
+                      Add
+                    </button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-2">
+                    <span class="text-sm font-medium text-gray-900">APP011</span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="text-sm text-gray-600">Compass API</span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="text-xs text-gray-500">Sarah Lee</span>
+                  </td>
+                  <td class="px-4 py-2 text-right">
+                    <button onclick="addToSelection('APP011', 'Compass API', 'Sarah Lee')" class="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors">
+                      <span class="material-icons text-lg">add</span>
+                      Add
+                    </button>
+                  </td>
+                </tr>
+                <tr class="bg-green-50">
+                  <td class="px-4 py-2">
+                    <span class="text-sm font-medium text-gray-900">APP012</span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="text-sm text-gray-600">Compass Dashboard</span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="text-xs text-gray-500">Mike Chen</span>
+                  </td>
+                  <td class="px-4 py-2 text-right">
+                    <span class="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-green-600">
+                      <span class="material-icons text-lg">check</span>
+                      Added
+                    </span>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-2">
+                    <span class="text-sm font-medium text-gray-900">APP013</span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="text-sm text-gray-600">Compass Analytics</span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="text-xs text-gray-500">Emily Davis</span>
+                  </td>
+                  <td class="px-4 py-2 text-right">
+                    <button onclick="addToSelection('APP013', 'Compass Analytics', 'Emily Davis')" class="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors">
+                      <span class="material-icons text-lg">add</span>
+                      Add
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Initial State -->
+          <div id="initialState" class="hidden border border-dashed border-gray-300 rounded-lg p-6 text-center">
+            <span class="material-icons text-4xl text-gray-300 mb-2">manage_search</span>
+            <p class="text-gray-500 text-sm">Search by app ID or app name to find apps</p>
+          </div>
+
+          <!-- Loading State -->
+          <div id="loadingState" class="hidden border border-gray-300 rounded-lg p-6 text-center">
+            <svg class="animate-spin h-8 w-8 text-blue-500 mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="text-gray-500 text-sm">Searching...</p>
+          </div>
+
+          <!-- Empty State -->
+          <div id="emptyState" class="hidden border border-dashed border-gray-300 rounded-lg p-6 text-center">
+            <span class="material-icons text-4xl text-gray-300 mb-2">search_off</span>
+            <p class="text-gray-500 text-sm">No apps found matching your search</p>
+          </div>
+
+          <!-- Error State -->
+          <div id="errorState" class="hidden border border-red-200 bg-red-50 rounded-lg p-4 text-center">
+            <span class="material-icons text-2xl text-red-400 mb-1">error_outline</span>
+            <p class="text-red-600 text-sm">Failed to search. Please try again.</p>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-gray-200 my-4"></div>
+
+        <!-- Selected Apps Section -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-sm font-medium text-gray-700">
+              Selected Apps
+              <span id="selectedCount" class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">3</span>
+            </label>
+            <button onclick="clearAllSelections()" class="text-xs text-red-600 hover:text-red-800 font-medium">
+              Clear all
+            </button>
+          </div>
+
+          <!-- Selected Apps List -->
+          <div id="selectedAppsList" class="border border-blue-200 bg-blue-50 rounded-lg max-h-36 overflow-y-auto">
+            <div class="divide-y divide-blue-200">
+              <div class="flex items-center justify-between px-4 py-2">
+                <div>
+                  <span class="text-sm font-medium text-gray-900">APP012</span>
+                  <span class="text-sm text-gray-600 ml-2">Compass Dashboard</span>
+                </div>
+                <button onclick="removeFromSelection('APP012')" class="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors">
+                  <span class="material-icons text-lg">close</span>
+                </button>
+              </div>
+              <div class="flex items-center justify-between px-4 py-2">
+                <div>
+                  <span class="text-sm font-medium text-gray-900">APP006</span>
+                  <span class="text-sm text-gray-600 ml-2">Order Processing</span>
+                </div>
+                <button onclick="removeFromSelection('APP006')" class="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors">
+                  <span class="material-icons text-lg">close</span>
+                </button>
+              </div>
+              <div class="flex items-center justify-between px-4 py-2">
+                <div>
+                  <span class="text-sm font-medium text-gray-900">APP015</span>
+                  <span class="text-sm text-gray-600 ml-2">Billing System</span>
+                </div>
+                <button onclick="removeFromSelection('APP015')" class="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors">
+                  <span class="material-icons text-lg">close</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty Selection State -->
+          <div id="emptySelectionState" class="hidden border border-dashed border-gray-300 rounded-lg p-4 text-center">
+            <p class="text-gray-500 text-sm">No apps selected. Search and add apps above.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Dialog Footer -->
+      <div class="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 flex-shrink-0">
+        <span class="text-sm text-gray-600">
+          <span class="font-medium" id="footerSelectedCount">3</span> app(s) will be added
+        </span>
+        <div class="flex gap-2">
+          <button onclick="closeAddAppsDialog()" class="px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors">
+            Cancel
+          </button>
+          <button onclick="submitApps()" id="submitAppsBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+            Add Apps
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================= -->
+  <!-- EDIT METADATA DIALOG      -->
+  <!-- ========================= -->
+  <div id="editMetadataDialog" class="fixed inset-0 z-50 hidden">
+    <div class="dialog-backdrop absolute inset-0" onclick="closeEditMetadataDialog()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+
+      <!-- Dialog Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">Edit Metadata - APP001</h3>
+        <button onclick="closeEditMetadataDialog()" class="text-gray-400 hover:text-gray-600">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <!-- Dialog Content -->
+      <div class="p-6 max-h-[60vh] overflow-y-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Unity Project Name -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Unity Project Name <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value="proj-payments"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+          </div>
+
+          <!-- Shared Account -->
+          <div class="flex items-center">
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 rounded border-gray-300 mr-2">
+              <span class="text-sm font-medium text-gray-700">Use Shared Account</span>
+            </label>
+          </div>
+
+          <!-- Environment Type -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Environment Type <span class="text-red-500">*</span>
+            </label>
+            <div class="flex gap-4">
+              <label class="flex items-center cursor-pointer">
+                <input type="radio" name="editEnvType" checked class="w-4 h-4 border-gray-300 mr-2">
+                <span class="text-sm text-gray-700">NP</span>
+              </label>
+              <label class="flex items-center cursor-pointer">
+                <input type="radio" name="editEnvType" class="w-4 h-4 border-gray-300 mr-2">
+                <span class="text-sm text-gray-700">PROD</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- AWS Region -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              AWS Region <span class="text-red-500">*</span>
+            </label>
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option>us-east-1</option>
+              <option>us-east-2</option>
+              <option>us-west-1</option>
+              <option>us-west-2</option>
+              <option>eu-west-1</option>
+            </select>
+          </div>
+
+          <!-- AWS Dev Account -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              AWS Dev/NP Account <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value="shared-dev-001"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+          </div>
+
+          <!-- AWS QA Account -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              AWS QA Account <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value="shared-qa-001"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+          </div>
+
+          <!-- AWS Prod Account -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              AWS Prod Account <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value="shared-prod-001"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+          </div>
+
+          <!-- CIOR Size -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              CIOR/CIQR Size <span class="text-red-500">*</span>
+            </label>
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option selected>Small</option>
+              <option>Medium</option>
+              <option>Large</option>
+            </select>
+          </div>
+
+          <!-- OU -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              OU
+            </label>
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option selected>default</option>
+              <option>engineering</option>
+              <option>platform</option>
+            </select>
+          </div>
+
+          <!-- Deployers -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Deployers
+            </label>
+            <input
+              type="text"
+              value="user1, user2"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+          </div>
+
+          <!-- Contributors -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Contributors
+            </label>
+            <input
+              type="text"
+              value="user3, user4, user5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Dialog Footer -->
+      <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <button onclick="closeEditMetadataDialog()" class="px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors">
+          Cancel
+        </button>
+        <button onclick="saveMetadata()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================= -->
+  <!-- TOAST NOTIFICATION        -->
+  <!-- ========================= -->
+  <div id="toast" class="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300">
+    <span class="material-icons">check_circle</span>
+    <span id="toastMessage">Changes saved successfully</span>
+  </div>
+
+  <script>
+    // Toggle metadata row expansion
+    function toggleMetadata(rowId) {
+      const metadataRow = document.getElementById(`${rowId}-metadata`);
+      const icon = document.getElementById(`${rowId}-icon`);
+
+      if (metadataRow.classList.contains('expanded')) {
+        metadataRow.classList.remove('expanded');
+        icon.textContent = 'expand_more';
+      } else {
+        metadataRow.classList.add('expanded');
+        icon.textContent = 'expand_less';
+      }
+    }
+
+    // Add Apps Dialog
+    function openAddAppsDialog() {
+      document.getElementById('addAppsDialog').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeAddAppsDialog() {
+      document.getElementById('addAppsDialog').classList.add('hidden');
+      document.body.style.overflow = '';
+      // Reset search
+      clearSearch();
+    }
+
+    function submitApps() {
+      if (selectedApps.length === 0) return;
+
+      // API call: PUT /api/cloud-next/apps
+      const payload = {
+        appIds: selectedApps.map(app => app.appId)
+      };
+      console.log('Submitting:', payload);
+
+      // Simulate API call
+      closeAddAppsDialog();
+      showToast(`${selectedApps.length} app(s) added to Cloud Next`);
+
+      // Reset selection for next time
+      selectedApps = [];
+    }
+
+    // Search handling with debounce
+    let searchTimeout;
+    function handleSearch(value) {
+      clearTimeout(searchTimeout);
+
+      const clearBtn = document.getElementById('clearSearchBtn');
+      const spinner = document.getElementById('searchSpinner');
+
+      if (value.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+        showState('results'); // or 'initial' if you want
+        return;
+      }
+
+      if (value.length < 2) {
+        return; // Don't search until 2+ chars
+      }
+
+      // Show loading state
+      showState('loading');
+      spinner.classList.remove('hidden');
+      clearBtn.classList.add('hidden');
+
+      // Debounce: wait 300ms after user stops typing
+      searchTimeout = setTimeout(() => {
+        // Simulate API call to Elasticsearch
+        simulateSearch(value);
+      }, 300);
+    }
+
+    function simulateSearch(query) {
+      // Simulate API delay
+      setTimeout(() => {
+        const spinner = document.getElementById('searchSpinner');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        spinner.classList.add('hidden');
+        clearBtn.classList.remove('hidden');
+
+        // Simulate results (in real app, this comes from Elasticsearch)
+        if (query.toLowerCase().includes('error')) {
+          showState('error');
+        } else if (query.toLowerCase().includes('empty')) {
+          showState('empty');
+        } else {
+          showState('results');
+        }
+      }, 500);
+    }
+
+    function showState(state) {
+      const states = ['searchResults', 'emptyState', 'initialState', 'loadingState', 'errorState'];
+      const resultCount = document.getElementById('resultCount');
+
+      states.forEach(s => {
+        const el = document.getElementById(s);
+        if (s === state + 'State' || (state === 'results' && s === 'searchResults')) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+
+      // Show/hide result count
+      resultCount.classList.toggle('hidden', state !== 'results');
+    }
+
+    function clearSearch() {
+      document.getElementById('appSearchInput').value = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      document.getElementById('searchSpinner').classList.add('hidden');
+      showState('initial');
+    }
+
+    // Selection management
+    let selectedApps = [
+      { appId: 'APP012', appName: 'Compass Dashboard' },
+      { appId: 'APP006', appName: 'Order Processing' },
+      { appId: 'APP015', appName: 'Billing System' }
+    ];
+
+    function addFromTextarea() {
+      const textarea = document.getElementById('appIdsTextarea');
+      const input = textarea.value.trim();
+
+      if (!input) return;
+
+      // Parse comma, tab, or newline separated IDs
+      const ids = input
+        .split(/[,\t\n]+/)
+        .map(id => id.trim())
+        .filter(id => id && id.length > 0);
+
+      if (ids.length === 0) return;
+
+      // Add each ID to selection (in real app, validate against API first)
+      let addedCount = 0;
+      ids.forEach(appId => {
+        if (!selectedApps.find(app => app.appId === appId)) {
+          selectedApps.push({ appId, appName: '(Pending validation)' });
+          addedCount++;
+        }
+      });
+
+      // Clear textarea
+      textarea.value = '';
+
+      // Update UI
+      updateSelectionUI();
+
+      if (addedCount > 0) {
+        showToast(`${addedCount} app(s) added to selection`);
+      } else {
+        showToast('Apps already in selection');
+      }
+    }
+
+    function addToSelection(appId, appName, owner) {
+      if (!selectedApps.find(app => app.appId === appId)) {
+        selectedApps.push({ appId, appName, owner });
+        updateSelectionUI();
+        showToast(`${appId} added to selection`);
+      }
+    }
+
+    function removeFromSelection(appId) {
+      selectedApps = selectedApps.filter(app => app.appId !== appId);
+      updateSelectionUI();
+    }
+
+    function clearAllSelections() {
+      selectedApps = [];
+      updateSelectionUI();
+    }
+
+    function updateSelectionUI() {
+      const listEl = document.getElementById('selectedAppsList');
+      const emptyEl = document.getElementById('emptySelectionState');
+      const countEl = document.getElementById('selectedCount');
+      const footerCountEl = document.getElementById('footerSelectedCount');
+      const submitBtn = document.getElementById('submitAppsBtn');
+
+      // Update counts
+      countEl.textContent = selectedApps.length;
+      footerCountEl.textContent = selectedApps.length;
+
+      // Enable/disable submit button
+      submitBtn.disabled = selectedApps.length === 0;
+      if (selectedApps.length === 0) {
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+
+      // Show/hide list vs empty state
+      if (selectedApps.length === 0) {
+        listEl.classList.add('hidden');
+        emptyEl.classList.remove('hidden');
+      } else {
+        listEl.classList.remove('hidden');
+        emptyEl.classList.add('hidden');
+
+        // Rebuild list HTML
+        listEl.innerHTML = `
+          <div class="divide-y divide-blue-200">
+            ${selectedApps.map(app => `
+              <div class="flex items-center justify-between px-4 py-2">
+                <div>
+                  <span class="text-sm font-medium text-gray-900">${app.appId}</span>
+                  <span class="text-sm text-gray-600 ml-2">${app.appName}</span>
+                </div>
+                <button onclick="removeFromSelection('${app.appId}')" class="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors">
+                  <span class="material-icons text-lg">close</span>
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    }
+
+    // Edit Metadata Dialog
+    function openEditMetadataDialog() {
+      document.getElementById('editMetadataDialog').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditMetadataDialog() {
+      document.getElementById('editMetadataDialog').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function saveMetadata() {
+      closeEditMetadataDialog();
+      showToast('Metadata saved successfully');
+    }
+
+    // Toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').textContent = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // Stat card click handler
+    document.querySelectorAll('.stat-card').forEach(card => {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.stat-card').forEach(c => {
+          c.classList.remove('active', 'ring-2', 'ring-blue-500', 'ring-offset-2');
+        });
+        this.classList.add('active', 'ring-2', 'ring-blue-500', 'ring-offset-2');
+      });
+    });
+  </script>
+</body>
+</html>

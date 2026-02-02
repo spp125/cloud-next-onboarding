@@ -170,51 +170,67 @@ interface SelectedApp {
         }
       </div>
 
-      <!-- Selected Apps Section -->
-      <div class="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg">
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center gap-2">
-            <mat-icon class="text-green-600">check_circle</mat-icon>
-            <label class="text-sm font-semibold text-gray-800">Selected Apps</label>
-            <span class="px-2 py-0.5 bg-green-600 text-white text-xs font-bold rounded-full">
-              {{ selectedApps.length }}
-            </span>
+      <!-- Selected Apps Section - Modern Light Design -->
+      <div class="mt-6 relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-cyan-50 border border-emerald-200 p-5">
+        <!-- Background decoration -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-200/40 rounded-full blur-3xl"></div>
+
+        <div class="relative">
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg">
+                <mat-icon class="text-white">playlist_add_check</mat-icon>
+              </div>
+              <div>
+                <h3 class="text-gray-800 font-semibold text-base">Selected Apps</h3>
+                <p class="text-gray-500 text-xs">Ready to add to Cloud Next</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="px-3 py-1.5 bg-emerald-100 text-emerald-700 text-sm font-bold rounded-full border border-emerald-300">
+                {{ selectedApps.length }} app{{ selectedApps.length !== 1 ? 's' : '' }}
+              </span>
+              @if (selectedApps.length > 0) {
+                <button
+                  mat-button
+                  class="!text-gray-500 hover:!text-red-600 hover:!bg-red-50 !rounded-lg !text-xs"
+                  (click)="clearAllSelections()">
+                  <mat-icon class="!text-sm mr-1">delete_sweep</mat-icon>
+                  Clear
+                </button>
+              }
+            </div>
           </div>
+
+          <!-- Selected Apps Chips -->
           @if (selectedApps.length > 0) {
-            <button
-              mat-button
-              color="warn"
-              class="text-xs"
-              (click)="clearAllSelections()">
-              <mat-icon class="text-sm mr-1">delete_sweep</mat-icon>
-              Clear all
-            </button>
+            <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+              @for (app of selectedApps; track app.appId) {
+                <div class="group inline-flex items-center gap-2 pl-1.5 pr-1 py-1 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md hover:border-emerald-300 transition-all duration-200">
+                  <span class="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 inline-flex items-center justify-center flex-shrink-0">
+                    <mat-icon class="check-icon">check</mat-icon>
+                  </span>
+                  <span class="text-sm font-medium text-gray-800">{{ app.appId }}</span>
+                  <span class="text-sm text-gray-500">{{ app.appName }}</span>
+                  <button
+                    class="w-5 h-5 inline-flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200 flex-shrink-0 border-0 bg-transparent cursor-pointer"
+                    (click)="removeFromSelection(app.appId)">
+                    <mat-icon class="close-icon">close</mat-icon>
+                  </button>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="text-center py-8">
+              <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/60 border border-gray-200 flex items-center justify-center">
+                <mat-icon class="!text-3xl text-gray-400">playlist_add</mat-icon>
+              </div>
+              <p class="text-gray-500 text-sm">No apps selected yet</p>
+              <p class="text-gray-400 text-xs mt-1">Search and add apps above</p>
+            </div>
           }
         </div>
-
-        <!-- Selected Apps Chips -->
-        @if (selectedApps.length > 0) {
-          <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-            @for (app of selectedApps; track app.appId) {
-              <div class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-green-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
-                <mat-icon class="text-green-600 text-sm">check</mat-icon>
-                <span class="text-sm font-medium text-gray-900">{{ app.appId }}</span>
-                <span class="text-sm text-gray-500">{{ app.appName }}</span>
-                <button
-                  mat-icon-button
-                  class="!w-6 !h-6 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full"
-                  (click)="removeFromSelection(app.appId)">
-                  <mat-icon class="text-base">close</mat-icon>
-                </button>
-              </div>
-            }
-          </div>
-        } @else {
-          <div class="text-center py-4">
-            <mat-icon class="text-3xl text-gray-300 mb-1">playlist_add</mat-icon>
-            <p class="text-gray-500 text-sm">No apps selected. Search and add apps above.</p>
-          </div>
-        }
       </div>
     </mat-dialog-content>
 
@@ -242,6 +258,22 @@ interface SelectedApp {
 
     mat-dialog-content {
       max-height: 70vh;
+    }
+
+    .check-icon {
+      font-size: 14px !important;
+      width: 14px !important;
+      height: 14px !important;
+      line-height: 1 !important;
+      color: white !important;
+    }
+
+    .close-icon {
+      font-size: 16px !important;
+      width: 16px !important;
+      height: 16px !important;
+      line-height: 1 !important;
+      color: inherit !important;
     }
   `]
 })

@@ -719,57 +719,79 @@
           </div>
         </div>
 
-        <!-- Selected Apps Section -->
-        <div class="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <span class="material-icons text-green-600">check_circle</span>
-              <label class="text-sm font-semibold text-gray-800">
-                Selected Apps
-              </label>
-              <span id="selectedCount" class="px-2 py-0.5 bg-green-600 text-white text-xs font-bold rounded-full">3</span>
-            </div>
-            <button onclick="clearAllSelections()" class="text-xs text-red-600 hover:text-red-800 font-medium flex items-center gap-1">
-              <span class="material-icons text-sm">delete_sweep</span>
-              Clear all
-            </button>
-          </div>
+        <!-- Selected Apps Section - Modern Light Design -->
+        <div class="mt-6 relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-cyan-50 border border-emerald-200 p-5">
+          <!-- Background decoration -->
+          <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-200/40 rounded-full blur-3xl"></div>
 
-          <!-- Selected Apps Chips -->
-          <div id="selectedAppsList" class="flex flex-wrap gap-2">
-            <!-- Chip 1 -->
-            <div class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-green-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
-              <span class="material-icons text-green-600 text-sm">check</span>
-              <span class="text-sm font-medium text-gray-900">APP012</span>
-              <span class="text-sm text-gray-500">Compass Dashboard</span>
-              <button onclick="removeFromSelection('APP012')" class="ml-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full p-0.5 transition-colors">
-                <span class="material-icons text-base">close</span>
-              </button>
+          <div class="relative">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                  <span class="material-icons text-white text-xl">playlist_add_check</span>
+                </div>
+                <div>
+                  <h3 class="text-gray-800 font-semibold text-base">Selected Apps</h3>
+                  <p class="text-gray-500 text-xs">Ready to add to Cloud Next</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span id="selectedCount" class="px-3 py-1.5 bg-emerald-100 text-emerald-700 text-sm font-bold rounded-full border border-emerald-300">
+                  3 apps
+                </span>
+                <button onclick="clearAllSelections()" class="px-3 py-1.5 text-xs text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 flex items-center gap-1">
+                  <span class="material-icons text-sm">delete_sweep</span>
+                  Clear
+                </button>
+              </div>
             </div>
-            <!-- Chip 2 -->
-            <div class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-green-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
-              <span class="material-icons text-green-600 text-sm">check</span>
-              <span class="text-sm font-medium text-gray-900">APP006</span>
-              <span class="text-sm text-gray-500">Order Processing</span>
-              <button onclick="removeFromSelection('APP006')" class="ml-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full p-0.5 transition-colors">
-                <span class="material-icons text-base">close</span>
-              </button>
-            </div>
-            <!-- Chip 3 -->
-            <div class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-green-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
-              <span class="material-icons text-green-600 text-sm">check</span>
-              <span class="text-sm font-medium text-gray-900">APP015</span>
-              <span class="text-sm text-gray-500">Billing System</span>
-              <button onclick="removeFromSelection('APP015')" class="ml-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full p-0.5 transition-colors">
-                <span class="material-icons text-base">close</span>
-              </button>
-            </div>
-          </div>
 
-          <!-- Empty Selection State -->
-          <div id="emptySelectionState" class="hidden text-center py-4">
-            <span class="material-icons text-3xl text-gray-300 mb-1">playlist_add</span>
-            <p class="text-gray-500 text-sm">No apps selected. Search and add apps above.</p>
+            <!-- Selected Apps Chips -->
+            <div id="selectedAppsList" class="flex flex-wrap gap-2">
+              <!-- Chip 1 -->
+              <div class="group inline-flex items-center gap-2 pl-1.5 pr-1 py-1 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md hover:border-emerald-300 transition-all duration-200">
+                <span class="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 inline-flex items-center justify-center flex-shrink-0">
+                  <span class="material-icons text-white" style="font-size: 14px; line-height: 1;">check</span>
+                </span>
+                <span class="text-sm font-medium text-gray-800">APP012</span>
+                <span class="text-sm text-gray-500">Compass Dashboard</span>
+                <button onclick="removeFromSelection('APP012')" class="w-5 h-5 inline-flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200 flex-shrink-0">
+                  <span class="material-icons" style="font-size: 16px; line-height: 1;">close</span>
+                </button>
+              </div>
+              <!-- Chip 2 -->
+              <div class="group inline-flex items-center gap-2 pl-1.5 pr-1 py-1 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md hover:border-emerald-300 transition-all duration-200">
+                <span class="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 inline-flex items-center justify-center flex-shrink-0">
+                  <span class="material-icons text-white" style="font-size: 14px; line-height: 1;">check</span>
+                </span>
+                <span class="text-sm font-medium text-gray-800">APP006</span>
+                <span class="text-sm text-gray-500">Order Processing</span>
+                <button onclick="removeFromSelection('APP006')" class="w-5 h-5 inline-flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200 flex-shrink-0">
+                  <span class="material-icons" style="font-size: 16px; line-height: 1;">close</span>
+                </button>
+              </div>
+              <!-- Chip 3 -->
+              <div class="group inline-flex items-center gap-2 pl-1.5 pr-1 py-1 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md hover:border-emerald-300 transition-all duration-200">
+                <span class="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 inline-flex items-center justify-center flex-shrink-0">
+                  <span class="material-icons text-white" style="font-size: 14px; line-height: 1;">check</span>
+                </span>
+                <span class="text-sm font-medium text-gray-800">APP015</span>
+                <span class="text-sm text-gray-500">Billing System</span>
+                <button onclick="removeFromSelection('APP015')" class="w-5 h-5 inline-flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200 flex-shrink-0">
+                  <span class="material-icons" style="font-size: 16px; line-height: 1;">close</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Empty Selection State -->
+            <div id="emptySelectionState" class="hidden text-center py-8">
+              <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/60 border border-gray-200 flex items-center justify-center">
+                <span class="material-icons text-3xl text-gray-400">playlist_add</span>
+              </div>
+              <p class="text-gray-500 text-sm">No apps selected yet</p>
+              <p class="text-gray-400 text-xs mt-1">Search and add apps above</p>
+            </div>
           </div>
         </div>
 
@@ -1156,7 +1178,7 @@
       const submitBtn = document.getElementById('submitAppsBtn');
 
       // Update counts
-      countEl.textContent = selectedApps.length;
+      countEl.textContent = `${selectedApps.length} app${selectedApps.length !== 1 ? 's' : ''}`;
       footerCountEl.textContent = selectedApps.length;
 
       // Enable/disable submit button
@@ -1175,14 +1197,16 @@
         listEl.classList.remove('hidden');
         emptyEl.classList.add('hidden');
 
-        // Rebuild list as chips
+        // Rebuild list as modern chips (light theme)
         listEl.innerHTML = selectedApps.map(app => `
-          <div class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-green-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
-            <span class="material-icons text-green-600 text-sm">check</span>
-            <span class="text-sm font-medium text-gray-900">${app.appId}</span>
+          <div class="group inline-flex items-center gap-2 pl-1.5 pr-1 py-1 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md hover:border-emerald-300 transition-all duration-200">
+            <span class="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 inline-flex items-center justify-center flex-shrink-0">
+              <span class="material-icons text-white" style="font-size: 14px; line-height: 1;">check</span>
+            </span>
+            <span class="text-sm font-medium text-gray-800">${app.appId}</span>
             <span class="text-sm text-gray-500">${app.appName}</span>
-            <button onclick="removeFromSelection('${app.appId}')" class="ml-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full p-0.5 transition-colors">
-              <span class="material-icons text-base">close</span>
+            <button onclick="removeFromSelection('${app.appId}')" class="w-5 h-5 inline-flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200 flex-shrink-0">
+              <span class="material-icons" style="font-size: 16px; line-height: 1;">close</span>
             </button>
           </div>
         `).join('');

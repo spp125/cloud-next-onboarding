@@ -172,4 +172,30 @@ export class MetadataViewComponent {
 
     return missing;
   }
+  InitCloudNextRequest{
+apps*	[CloudNextAppRequest{
+appId*	string
+isCloudNextEligible	boolean
+cloudNextMetadata*	CloudNextMetadata{
+unityProject*	string
+isSharedAccount	boolean
+isPNpAccount	boolean
+awsRegions*	[string]
+awsAccountNames	AwsAccountNames{
+DEV/NP	string
+QA	string
+PROD	string
+}
+cidrSize	integer($int32)
+maximum: 16
+minimum: 28
+numberOfAzs	integer($int32)
+maximum: 6
+minimum: 1
+ou	string
+deployers	[string]
+contributors	[string]
+}
+}]
+}
 }

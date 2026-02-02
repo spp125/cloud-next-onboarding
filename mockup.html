@@ -719,56 +719,56 @@
           </div>
         </div>
 
-        <!-- Divider -->
-        <div class="border-t border-gray-200 my-4"></div>
-
         <!-- Selected Apps Section -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <label class="block text-sm font-medium text-gray-700">
-              Selected Apps
-              <span id="selectedCount" class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">3</span>
-            </label>
-            <button onclick="clearAllSelections()" class="text-xs text-red-600 hover:text-red-800 font-medium">
+        <div class="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="material-icons text-green-600">check_circle</span>
+              <label class="text-sm font-semibold text-gray-800">
+                Selected Apps
+              </label>
+              <span id="selectedCount" class="px-2 py-0.5 bg-green-600 text-white text-xs font-bold rounded-full">3</span>
+            </div>
+            <button onclick="clearAllSelections()" class="text-xs text-red-600 hover:text-red-800 font-medium flex items-center gap-1">
+              <span class="material-icons text-sm">delete_sweep</span>
               Clear all
             </button>
           </div>
 
-          <!-- Selected Apps List -->
-          <div id="selectedAppsList" class="border border-blue-200 bg-blue-50 rounded-lg max-h-36 overflow-y-auto">
-            <div class="divide-y divide-blue-200">
-              <div class="flex items-center justify-between px-4 py-2">
-                <div>
-                  <span class="text-sm font-medium text-gray-900">APP012</span>
-                  <span class="text-sm text-gray-600 ml-2">Compass Dashboard</span>
-                </div>
-                <button onclick="removeFromSelection('APP012')" class="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors">
-                  <span class="material-icons text-lg">close</span>
-                </button>
-              </div>
-              <div class="flex items-center justify-between px-4 py-2">
-                <div>
-                  <span class="text-sm font-medium text-gray-900">APP006</span>
-                  <span class="text-sm text-gray-600 ml-2">Order Processing</span>
-                </div>
-                <button onclick="removeFromSelection('APP006')" class="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors">
-                  <span class="material-icons text-lg">close</span>
-                </button>
-              </div>
-              <div class="flex items-center justify-between px-4 py-2">
-                <div>
-                  <span class="text-sm font-medium text-gray-900">APP015</span>
-                  <span class="text-sm text-gray-600 ml-2">Billing System</span>
-                </div>
-                <button onclick="removeFromSelection('APP015')" class="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors">
-                  <span class="material-icons text-lg">close</span>
-                </button>
-              </div>
+          <!-- Selected Apps Chips -->
+          <div id="selectedAppsList" class="flex flex-wrap gap-2">
+            <!-- Chip 1 -->
+            <div class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-green-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
+              <span class="material-icons text-green-600 text-sm">check</span>
+              <span class="text-sm font-medium text-gray-900">APP012</span>
+              <span class="text-sm text-gray-500">Compass Dashboard</span>
+              <button onclick="removeFromSelection('APP012')" class="ml-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full p-0.5 transition-colors">
+                <span class="material-icons text-base">close</span>
+              </button>
+            </div>
+            <!-- Chip 2 -->
+            <div class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-green-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
+              <span class="material-icons text-green-600 text-sm">check</span>
+              <span class="text-sm font-medium text-gray-900">APP006</span>
+              <span class="text-sm text-gray-500">Order Processing</span>
+              <button onclick="removeFromSelection('APP006')" class="ml-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full p-0.5 transition-colors">
+                <span class="material-icons text-base">close</span>
+              </button>
+            </div>
+            <!-- Chip 3 -->
+            <div class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-green-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
+              <span class="material-icons text-green-600 text-sm">check</span>
+              <span class="text-sm font-medium text-gray-900">APP015</span>
+              <span class="text-sm text-gray-500">Billing System</span>
+              <button onclick="removeFromSelection('APP015')" class="ml-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full p-0.5 transition-colors">
+                <span class="material-icons text-base">close</span>
+              </button>
             </div>
           </div>
 
           <!-- Empty Selection State -->
-          <div id="emptySelectionState" class="hidden border border-dashed border-gray-300 rounded-lg p-4 text-center">
+          <div id="emptySelectionState" class="hidden text-center py-4">
+            <span class="material-icons text-3xl text-gray-300 mb-1">playlist_add</span>
             <p class="text-gray-500 text-sm">No apps selected. Search and add apps above.</p>
           </div>
         </div>
@@ -1175,22 +1175,17 @@
         listEl.classList.remove('hidden');
         emptyEl.classList.add('hidden');
 
-        // Rebuild list HTML
-        listEl.innerHTML = `
-          <div class="divide-y divide-blue-200">
-            ${selectedApps.map(app => `
-              <div class="flex items-center justify-between px-4 py-2">
-                <div>
-                  <span class="text-sm font-medium text-gray-900">${app.appId}</span>
-                  <span class="text-sm text-gray-600 ml-2">${app.appName}</span>
-                </div>
-                <button onclick="removeFromSelection('${app.appId}')" class="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors">
-                  <span class="material-icons text-lg">close</span>
-                </button>
-              </div>
-            `).join('')}
+        // Rebuild list as chips
+        listEl.innerHTML = selectedApps.map(app => `
+          <div class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-green-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
+            <span class="material-icons text-green-600 text-sm">check</span>
+            <span class="text-sm font-medium text-gray-900">${app.appId}</span>
+            <span class="text-sm text-gray-500">${app.appName}</span>
+            <button onclick="removeFromSelection('${app.appId}')" class="ml-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full p-0.5 transition-colors">
+              <span class="material-icons text-base">close</span>
+            </button>
           </div>
-        `;
+        `).join('');
       }
     }
 

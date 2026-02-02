@@ -170,51 +170,48 @@ interface SelectedApp {
         }
       </div>
 
-      <!-- Divider -->
-      <div class="border-t border-gray-200 my-4"></div>
-
       <!-- Selected Apps Section -->
-      <div>
-        <div class="flex items-center justify-between mb-2">
-          <label class="block text-sm font-medium text-gray-700">
-            Selected Apps
-            <span class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+      <div class="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <mat-icon class="text-green-600">check_circle</mat-icon>
+            <label class="text-sm font-semibold text-gray-800">Selected Apps</label>
+            <span class="px-2 py-0.5 bg-green-600 text-white text-xs font-bold rounded-full">
               {{ selectedApps.length }}
             </span>
-          </label>
+          </div>
           @if (selectedApps.length > 0) {
             <button
               mat-button
               color="warn"
               class="text-xs"
               (click)="clearAllSelections()">
+              <mat-icon class="text-sm mr-1">delete_sweep</mat-icon>
               Clear all
             </button>
           }
         </div>
 
-        <!-- Selected Apps List -->
+        <!-- Selected Apps Chips -->
         @if (selectedApps.length > 0) {
-          <div class="border border-blue-200 bg-blue-50 rounded-lg max-h-36 overflow-y-auto">
-            <div class="divide-y divide-blue-200">
-              @for (app of selectedApps; track app.appId) {
-                <div class="flex items-center justify-between px-4 py-2">
-                  <div>
-                    <span class="text-sm font-medium text-gray-900">{{ app.appId }}</span>
-                    <span class="text-sm text-gray-600 ml-2">{{ app.appName }}</span>
-                  </div>
-                  <button
-                    mat-icon-button
-                    class="text-gray-400 hover:text-red-600"
-                    (click)="removeFromSelection(app.appId)">
-                    <mat-icon>close</mat-icon>
-                  </button>
-                </div>
-              }
-            </div>
+          <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+            @for (app of selectedApps; track app.appId) {
+              <div class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-green-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
+                <mat-icon class="text-green-600 text-sm">check</mat-icon>
+                <span class="text-sm font-medium text-gray-900">{{ app.appId }}</span>
+                <span class="text-sm text-gray-500">{{ app.appName }}</span>
+                <button
+                  mat-icon-button
+                  class="!w-6 !h-6 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full"
+                  (click)="removeFromSelection(app.appId)">
+                  <mat-icon class="text-base">close</mat-icon>
+                </button>
+              </div>
+            }
           </div>
         } @else {
-          <div class="border border-dashed border-gray-300 rounded-lg p-4 text-center">
+          <div class="text-center py-4">
+            <mat-icon class="text-3xl text-gray-300 mb-1">playlist_add</mat-icon>
             <p class="text-gray-500 text-sm">No apps selected. Search and add apps above.</p>
           </div>
         }

@@ -11,6 +11,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { ClipboardModule, Clipboard } from '@angular/cdk/clipboard';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { Subject, debounceTime, distinctUntilChanged, filter, switchMap, takeUntil, catchError, of } from 'rxjs';
 import { CloudNextService } from '../../services/cloud-next.service';
@@ -59,6 +60,7 @@ const AZ_OPTIONS = [1, 2, 3, 4, 5, 6];
     MatSelectModule,
     MatTooltipModule,
     MatButtonToggleModule,
+    ClipboardModule,
     MonacoEditorModule
   ],
   template: `
@@ -440,10 +442,6 @@ const AZ_OPTIONS = [1, 2, 3, 4, 5, 6];
             <mat-icon class="!text-base mr-1">content_copy</mat-icon>
             Copy
           </button>
-          <button mat-button class="!text-sm" (click)="loadSampleJson()">
-            <mat-icon class="!text-base mr-1">description</mat-icon>
-            Load Sample
-          </button>
         </div>
       </div>
 
@@ -527,16 +525,6 @@ const AZ_OPTIONS = [1, 2, 3, 4, 5, 6];
       min-height: 32px;
     }
 
-    .view-toggle {
-      ::ng-deep .mat-button-toggle-appearance-standard {
-        background: transparent;
-      }
-      ::ng-deep .mat-button-toggle-checked {
-        background: #e0e7ff;
-        color: #4f46e5;
-      }
-    }
-
     .editor-wrapper {
       height: 50vh;
       min-height: 400px;
@@ -551,26 +539,12 @@ const AZ_OPTIONS = [1, 2, 3, 4, 5, 6];
       border-radius: 8px;
       overflow: hidden;
     }
-
-    ::ng-deep .editor-instance .editor-container {
-      height: 100% !important;
-      min-height: 380px !important;
-    }
-
-    ::ng-deep .editor-instance .monaco-editor {
-      height: 100% !important;
-      min-height: 380px !important;
-    }
-
-    ::ng-deep .editor-instance .overflow-guard {
-      height: 100% !important;
-      min-height: 380px !important;
-    }
   `]
 })
 export class InitializeAppsDialogComponent implements OnInit, OnDestroy {
   private dialogRef = inject(MatDialogRef<InitializeAppsDialogComponent>);
   private cloudNextService = inject(CloudNextService);
+  private clipboard = inject(Clipboard);
   private data = inject<InitializeAppsDialogData>(MAT_DIALOG_DATA, { optional: true });
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
@@ -717,36 +691,7 @@ export class InitializeAppsDialogComponent implements OnInit, OnDestroy {
   }
 
   copyJson(): void {
-    navigator.clipboard.writeText(this.jsonContent);
-  }
-
-  loadSampleJson(): void {
-    const sample: InitCloudNextRequest = {
-      apps: [
-        {
-          appId: 'APP001',
-          isCloudNextEligible: true,
-          cloudNextMetadata: {
-            unityProject: 'proj-sample',
-            isSharedAccount: false,
-            isPNpAccount: true,
-            awsRegions: ['us-east-1', 'us-west-2'],
-            awsAccountNames: {
-              'DEV/NP': '123456789012',
-              'QA': '234567890123',
-              'PROD': '345678901234'
-            },
-            cidrSize: 24,
-            numberOfAzs: 2,
-            ou: 'Platform',
-            deployers: ['user1', 'user2'],
-            contributors: ['user3']
-          }
-        }
-      ]
-    };
-    this.jsonContent = JSON.stringify(sample, null, 2);
-    this.onJsonChange(this.jsonContent);
+    this.clipboard.copy(this.jsonContent);
   }
 
   private requestToRow(app: CloudNextAppRequest): InitAppRow {

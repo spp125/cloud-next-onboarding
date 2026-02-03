@@ -58,3 +58,29 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
 }
+
+/* Monaco Editor in Initialize Dialog */
+.editor-instance .editor-container {
+  height: 100% !important;
+  min-height: 380px !important;
+}
+
+.editor-instance .monaco-editor {
+  height: 100% !important;
+  min-height: 380px !important;
+}
+
+.editor-instance .overflow-guard {
+  height: 100% !important;
+  min-height: 380px !important;
+}
+
+/* View Toggle in Initialize Dialog */
+.view-toggle .mat-button-toggle-appearance-standard {
+  background: transparent;
+}
+
+.view-toggle .mat-button-toggle-checked {
+  background: #e0e7ff;
+  color: #4f46e5;
+}

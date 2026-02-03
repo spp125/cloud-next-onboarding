@@ -22,3 +22,39 @@ html {
 /* Global styles */
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Initialize Apps Dialog */
+.initialize-dialog-panel {
+  max-width: 95vw !important;
+  width: 95vw !important;
+
+  .mat-mdc-dialog-container {
+    padding: 0;
+    max-width: none !important;
+    max-height: 90vh !important;
+  }
+
+  .mat-mdc-dialog-surface {
+    border-radius: 12px;
+    max-width: none !important;
+  }
+}
+
+/* Custom scrollbar for tables */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}

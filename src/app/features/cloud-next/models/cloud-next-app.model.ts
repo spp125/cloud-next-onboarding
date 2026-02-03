@@ -49,3 +49,62 @@ export interface AddAppsResponse {
   added: string[];
   failed: string[];
 }
+
+// Initialize Apps API interfaces
+export interface InitCloudNextRequest {
+  apps: CloudNextAppRequest[];
+}
+
+export interface CloudNextAppRequest {
+  appId: string;
+  isCloudNextEligible?: boolean;
+  cloudNextMetadata: InitCloudNextMetadata;
+}
+
+export interface InitCloudNextMetadata {
+  unityProject: string;
+  isSharedAccount?: boolean;
+  isPNpAccount?: boolean;
+  awsRegions: string[];
+  awsAccountNames?: AwsAccountNames;
+  cidrSize?: number;
+  numberOfAzs?: number;
+  ou?: string;
+  deployers?: string[];
+  contributors?: string[];
+}
+
+export interface AwsAccountNames {
+  'DEV/NP'?: string;
+  'QA'?: string;
+  'PROD'?: string;
+}
+
+export interface InitCloudNextResponse {
+  success: boolean;
+  initialized: string[];
+  failed: { appId: string; reason: string }[];
+}
+
+// Row state for Initialize Apps Dialog
+export type InitRowValidationState = 'valid' | 'warning' | 'error';
+
+export interface InitAppRow {
+  appId: string;
+  appName: string;
+  owner?: string;
+  unityProject: string;
+  isSharedAccount: boolean;
+  isPNpAccount: boolean;
+  awsRegions: string[];
+  devNpAccount: string;
+  qaAccount: string;
+  prodAccount: string;
+  cidrSize: number | null;
+  numberOfAzs: number | null;
+  ou: string;
+  deployers: string;
+  contributors: string;
+  validationState: InitRowValidationState;
+  isExisting: boolean; // true if app already exists in main table
+}

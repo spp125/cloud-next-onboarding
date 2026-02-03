@@ -8,7 +8,9 @@ import {
   AppSearchResult,
   AddAppsRequest,
   AddAppsResponse,
-  CloudNextMetadata
+  CloudNextMetadata,
+  InitCloudNextRequest,
+  InitCloudNextResponse
 } from '../models/cloud-next-app.model';
 
 @Injectable({
@@ -225,13 +227,87 @@ export class CloudNextService {
   }
 
   /**
-   * Initialize apps
+   * Initialize apps with metadata
    */
-  initializeApps(appIds: string[]): Observable<{ success: boolean }> {
+  initializeApps(request: InitCloudNextRequest): Observable<InitCloudNextResponse> {
     // TODO: Replace with real API call
-    // return this.http.post<{ success: boolean }>(`${this.baseUrl}/apps/initialize`, { appIds });
+    // return this.http.post<InitCloudNextResponse>(`${this.baseUrl}/apps/initialize`, request);
 
-    return of({ success: true }).pipe(delay(500));
+    // Mock: simulate successful initialization
+    const initialized = request.apps.map(app => app.appId);
+
+    // Update mock data for initialized apps
+    request.apps.forEach(appRequest => {
+      const existingApp = this.mockApps.find(a => a.appId === appRequest.appId);
+      if (existingApp) {
+        existingApp.status = 'initialized';
+        existingApp.isCloudNextCandidate = true;
+        existingApp.unityProject = appRequest.cloudNextMetadata.unityProject;
+        existingApp.cloudNextMetadata = {
+          unityProjectName: appRequest.cloudNextMetadata.unityProject,
+          isSharedAccount: appRequest.cloudNextMetadata.isSharedAccount ?? null,
+          environmentType: appRequest.cloudNextMetadata.isPNpAccount ? 'NP' : 'PROD',
+          awsRegion: appRequest.cloudNextMetadata.awsRegions[0] ?? null,
+          awsAccounts: appRequest.cloudNextMetadata.awsAccountNames ? {
+            devNp: appRequest.cloudNextMetadata.awsAccountNames['DEV/NP'] ?? null,
+            qa: appRequest.cloudNextMetadata.awsAccountNames['QA'] ?? null,
+            prod: appRequest.cloudNextMetadata.awsAccountNames['PROD'] ?? null
+          } : null,
+          ciorSize: appRequest.cloudNextMetadata.cidrSize?.toString() ?? null,
+          ou: appRequest.cloudNextMetadata.ou ?? null,
+          deployers: appRequest.cloudNextMetadata.deployers ?? null,
+          contributors: appRequest.cloudNextMetadata.contributors ?? null
+        };
+      } else {
+        // Add new app to mock data
+        this.mockApps.push({
+          appId: appRequest.appId,
+          appName: appRequest.appId, // Will be fetched from real API
+          owner: 'Unknown',
+          unityProject: appRequest.cloudNextMetadata.unityProject,
+          lifecycleStage: 'Active',
+          isCloudNextCandidate: true,
+          status: 'initialized',
+          cloudNextMetadata: {
+            unityProjectName: appRequest.cloudNextMetadata.unityProject,
+            isSharedAccount: appRequest.cloudNextMetadata.isSharedAccount ?? null,
+            environmentType: appRequest.cloudNextMetadata.isPNpAccount ? 'NP' : 'PROD',
+            awsRegion: appRequest.cloudNextMetadata.awsRegions[0] ?? null,
+            awsAccounts: appRequest.cloudNextMetadata.awsAccountNames ? {
+              devNp: appRequest.cloudNextMetadata.awsAccountNames['DEV/NP'] ?? null,
+              qa: appRequest.cloudNextMetadata.awsAccountNames['QA'] ?? null,
+              prod: appRequest.cloudNextMetadata.awsAccountNames['PROD'] ?? null
+            } : null,
+            ciorSize: appRequest.cloudNextMetadata.cidrSize?.toString() ?? null,
+            ou: appRequest.cloudNextMetadata.ou ?? null,
+            deployers: appRequest.cloudNextMetadata.deployers ?? null,
+            contributors: appRequest.cloudNextMetadata.contributors ?? null
+          }
+        });
+      }
+    });
+
+    return of({
+      success: true,
+      initialized,
+      failed: []
+    }).pipe(delay(500));
+  }
+
+  /**
+   * Get app by ID (for fetching existing metadata)
+   */
+  getAppById(appId: string): Observable<CloudNextApp | null> {
+    const app = this.mockApps.find(a => a.appId === appId);
+    return of(app ?? null).pipe(delay(100));
+  }
+
+  /**
+   * Get multiple apps by IDs
+   */
+  getAppsByIds(appIds: string[]): Observable<CloudNextApp[]> {
+    const apps = this.mockApps.filter(a => appIds.includes(a.appId));
+    return of(apps).pipe(delay(200));
   }
 
   /**

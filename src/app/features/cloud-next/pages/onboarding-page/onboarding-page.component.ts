@@ -8,6 +8,7 @@ import { CloudNextApp, CloudNextStatus, DashboardStats } from '../../models/clou
 import { DashboardOverviewComponent } from '../../components/dashboard-overview/dashboard-overview.component';
 import { AppsTableComponent } from '../../components/apps-table/apps-table.component';
 import { AddAppsDialogComponent } from '../../components/add-apps-dialog/add-apps-dialog.component';
+import { InitializeAppsDialogComponent, InitializeAppsDialogData } from '../../components/initialize-apps-dialog/initialize-apps-dialog.component';
 
 @Component({
   selector: 'app-onboarding-page',
@@ -173,21 +174,34 @@ export class OnboardingPageComponent implements OnInit {
   }
 
   onInitialize(): void {
-    const appsToInit = this.selectedApps().filter(app => app.status === 'new');
-    if (appsToInit.length === 0) return;
+    const selectedNewApps = this.selectedApps().filter(app => app.status === 'new');
 
-    const appIds = appsToInit.map(app => app.appId);
-    this.cloudNextService.initializeApps(appIds).subscribe({
-      next: () => {
+    const dialogData: InitializeAppsDialogData = {
+      selectedApps: selectedNewApps.length > 0 ? selectedNewApps : undefined
+    };
+
+    const dialogRef = this.dialog.open(InitializeAppsDialogComponent, {
+      data: dialogData,
+      disableClose: false,
+      panelClass: 'initialize-dialog-panel',
+      width: '95vw',
+      maxWidth: '1800px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.success && result?.initialized?.length > 0) {
         this.snackBar.open(
-          `${appIds.length} app(s) initialized`,
+          `${result.initialized.length} app(s) initialized successfully`,
           'Close',
           { duration: 3000 }
         );
         this.loadData();
-      },
-      error: () => {
-        this.snackBar.open('Failed to initialize apps', 'Close', { duration: 3000 });
+      } else if (result?.failed?.length > 0) {
+        this.snackBar.open(
+          `Failed to initialize ${result.failed.length} app(s)`,
+          'Close',
+          { duration: 3000 }
+        );
       }
     });
   }

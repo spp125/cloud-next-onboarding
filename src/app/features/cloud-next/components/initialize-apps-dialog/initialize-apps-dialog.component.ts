@@ -448,9 +448,9 @@ const AZ_OPTIONS = [1, 2, 3, 4, 5, 6];
       </div>
 
       <!-- Monaco Editor -->
-      <div class="flex-1 p-4" style="height: 50vh;">
+      <div class="flex-1 p-4 editor-wrapper">
         <ngx-monaco-editor
-          class="h-full w-full border border-gray-300 rounded-lg overflow-hidden"
+          class="editor-instance"
           [options]="editorOptions"
           [(ngModel)]="jsonContent"
           (ngModelChange)="onJsonChange($event)">
@@ -537,9 +537,34 @@ const AZ_OPTIONS = [1, 2, 3, 4, 5, 6];
       }
     }
 
-    ngx-monaco-editor {
-      display: block;
-      height: 100%;
+    .editor-wrapper {
+      height: 50vh;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .editor-instance {
+      flex: 1;
+      min-height: 380px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    ::ng-deep .editor-instance .editor-container {
+      height: 100% !important;
+      min-height: 380px !important;
+    }
+
+    ::ng-deep .editor-instance .monaco-editor {
+      height: 100% !important;
+      min-height: 380px !important;
+    }
+
+    ::ng-deep .editor-instance .overflow-guard {
+      height: 100% !important;
+      min-height: 380px !important;
     }
   `]
 })

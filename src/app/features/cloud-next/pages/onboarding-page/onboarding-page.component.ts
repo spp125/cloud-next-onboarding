@@ -208,17 +208,9 @@ export class OnboardingPageComponent implements OnInit {
   }
 
   onPrepareForDev(): void {
-    const apps = this.selectedApps().filter(app => app.status === 'initialized');
-    if (apps.length === 0) return;
-
-    const dialogData: PrepareAppsDialogData = {
-      type: 'dev',
-      apps
-    };
-
     const dialogRef = this.dialog.open(PrepareAppsDialogComponent, {
-      data: dialogData,
-      width: '700px',
+      data: { type: 'dev' } as PrepareAppsDialogData,
+      width: '800px',
       maxHeight: '90vh',
       panelClass: 'prepare-dialog-panel'
     });
@@ -239,17 +231,9 @@ export class OnboardingPageComponent implements OnInit {
   }
 
   onPrepareForStage(): void {
-    const apps = this.selectedApps().filter(app => app.status === 'in_dev');
-    if (apps.length === 0) return;
-
-    const dialogData: PrepareAppsDialogData = {
-      type: 'stage',
-      apps
-    };
-
     const dialogRef = this.dialog.open(PrepareAppsDialogComponent, {
-      data: dialogData,
-      width: '700px',
+      data: { type: 'stage' } as PrepareAppsDialogData,
+      width: '800px',
       maxHeight: '90vh',
       panelClass: 'prepare-dialog-panel'
     });
@@ -270,17 +254,9 @@ export class OnboardingPageComponent implements OnInit {
   }
 
   onPrepareForProd(): void {
-    const apps = this.selectedApps().filter(app => app.status === 'in_stage');
-    if (apps.length === 0) return;
-
-    const dialogData: PrepareAppsDialogData = {
-      type: 'prod',
-      apps
-    };
-
     const dialogRef = this.dialog.open(PrepareAppsDialogComponent, {
-      data: dialogData,
-      width: '700px',
+      data: { type: 'prod' } as PrepareAppsDialogData,
+      width: '800px',
       maxHeight: '90vh',
       panelClass: 'prepare-dialog-panel'
     });

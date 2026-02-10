@@ -84,3 +84,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background: #e0e7ff;
   color: #4f46e5;
 }
+
+/* Prepare Apps Dialog */
+.prepare-dialog-panel {
+  .mat-mdc-dialog-container {
+    padding: 0;
+  }
+
+  .mat-mdc-dialog-surface {
+    border-radius: 12px;
+  }
+}

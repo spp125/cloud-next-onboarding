@@ -9,6 +9,7 @@ import { DashboardOverviewComponent } from '../../components/dashboard-overview/
 import { AppsTableComponent } from '../../components/apps-table/apps-table.component';
 import { AddAppsDialogComponent } from '../../components/add-apps-dialog/add-apps-dialog.component';
 import { InitializeAppsDialogComponent, InitializeAppsDialogData } from '../../components/initialize-apps-dialog/initialize-apps-dialog.component';
+import { PrepareAppsDialogComponent, PrepareAppsDialogData } from '../../components/prepare-apps-dialog/prepare-apps-dialog.component';
 
 @Component({
   selector: 'app-onboarding-page',
@@ -210,14 +211,29 @@ export class OnboardingPageComponent implements OnInit {
     const apps = this.selectedApps().filter(app => app.status === 'initialized');
     if (apps.length === 0) return;
 
-    const appIds = apps.map(app => app.appId);
-    this.cloudNextService.prepareForDev(appIds).subscribe({
-      next: () => {
-        this.snackBar.open(`${appIds.length} app(s) prepared for Dev`, 'Close', { duration: 3000 });
-        this.loadData();
-      },
-      error: () => {
-        this.snackBar.open('Failed to prepare apps for Dev', 'Close', { duration: 3000 });
+    const dialogData: PrepareAppsDialogData = {
+      type: 'dev',
+      apps
+    };
+
+    const dialogRef = this.dialog.open(PrepareAppsDialogComponent, {
+      data: dialogData,
+      width: '700px',
+      maxHeight: '90vh',
+      panelClass: 'prepare-dialog-panel'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.confirmed && result?.appIds?.length > 0) {
+        this.cloudNextService.prepareForDev(result.appIds).subscribe({
+          next: () => {
+            this.snackBar.open(`${result.appIds.length} app(s) prepared for Dev`, 'Close', { duration: 3000 });
+            this.loadData();
+          },
+          error: () => {
+            this.snackBar.open('Failed to prepare apps for Dev', 'Close', { duration: 3000 });
+          }
+        });
       }
     });
   }
@@ -226,14 +242,29 @@ export class OnboardingPageComponent implements OnInit {
     const apps = this.selectedApps().filter(app => app.status === 'in_dev');
     if (apps.length === 0) return;
 
-    const appIds = apps.map(app => app.appId);
-    this.cloudNextService.prepareForStage(appIds).subscribe({
-      next: () => {
-        this.snackBar.open(`${appIds.length} app(s) prepared for Stage`, 'Close', { duration: 3000 });
-        this.loadData();
-      },
-      error: () => {
-        this.snackBar.open('Failed to prepare apps for Stage', 'Close', { duration: 3000 });
+    const dialogData: PrepareAppsDialogData = {
+      type: 'stage',
+      apps
+    };
+
+    const dialogRef = this.dialog.open(PrepareAppsDialogComponent, {
+      data: dialogData,
+      width: '700px',
+      maxHeight: '90vh',
+      panelClass: 'prepare-dialog-panel'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.confirmed && result?.appIds?.length > 0) {
+        this.cloudNextService.prepareForStage(result.appIds).subscribe({
+          next: () => {
+            this.snackBar.open(`${result.appIds.length} app(s) prepared for Stage`, 'Close', { duration: 3000 });
+            this.loadData();
+          },
+          error: () => {
+            this.snackBar.open('Failed to prepare apps for Stage', 'Close', { duration: 3000 });
+          }
+        });
       }
     });
   }
@@ -242,14 +273,29 @@ export class OnboardingPageComponent implements OnInit {
     const apps = this.selectedApps().filter(app => app.status === 'in_stage');
     if (apps.length === 0) return;
 
-    const appIds = apps.map(app => app.appId);
-    this.cloudNextService.prepareForProd(appIds).subscribe({
-      next: () => {
-        this.snackBar.open(`${appIds.length} app(s) prepared for Prod`, 'Close', { duration: 3000 });
-        this.loadData();
-      },
-      error: () => {
-        this.snackBar.open('Failed to prepare apps for Prod', 'Close', { duration: 3000 });
+    const dialogData: PrepareAppsDialogData = {
+      type: 'prod',
+      apps
+    };
+
+    const dialogRef = this.dialog.open(PrepareAppsDialogComponent, {
+      data: dialogData,
+      width: '700px',
+      maxHeight: '90vh',
+      panelClass: 'prepare-dialog-panel'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.confirmed && result?.appIds?.length > 0) {
+        this.cloudNextService.prepareForProd(result.appIds).subscribe({
+          next: () => {
+            this.snackBar.open(`${result.appIds.length} app(s) deployed to Prod`, 'Close', { duration: 3000 });
+            this.loadData();
+          },
+          error: () => {
+            this.snackBar.open('Failed to deploy apps to Prod', 'Close', { duration: 3000 });
+          }
+        });
       }
     });
   }

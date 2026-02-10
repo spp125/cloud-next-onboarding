@@ -79,8 +79,6 @@ interface SelectedAppsInfo {
           <!-- Prepare for Dev -->
           <button
             mat-stroked-button
-            [disabled]="!canPrepareForDev"
-            [matTooltip]="!canPrepareForDev ? 'Select initialized apps' : ''"
             (click)="prepareForDev.emit()">
             <mat-icon>build</mat-icon>
             Prepare for Dev
@@ -89,8 +87,6 @@ interface SelectedAppsInfo {
           <!-- Prepare for Stage -->
           <button
             mat-stroked-button
-            [disabled]="!canPrepareForStage"
-            [matTooltip]="!canPrepareForStage ? 'Select apps in Dev' : ''"
             (click)="prepareForStage.emit()">
             <mat-icon>inventory_2</mat-icon>
             Prepare for Stage
@@ -99,8 +95,6 @@ interface SelectedAppsInfo {
           <!-- Prepare for Prod -->
           <button
             mat-stroked-button
-            [disabled]="!canPrepareForProd"
-            [matTooltip]="!canPrepareForProd ? 'Select apps in Stage' : ''"
             (click)="prepareForProd.emit()">
             <mat-icon>rocket_launch</mat-icon>
             Prepare for Prod
@@ -222,18 +216,6 @@ export class DashboardOverviewComponent {
 
   get canInitialize(): boolean {
     return this.selectedApps.byStatus['new'] > 0;
-  }
-
-  get canPrepareForDev(): boolean {
-    return this.selectedApps.byStatus['initialized'] > 0;
-  }
-
-  get canPrepareForStage(): boolean {
-    return this.selectedApps.byStatus['in_dev'] > 0;
-  }
-
-  get canPrepareForProd(): boolean {
-    return this.selectedApps.byStatus['in_stage'] > 0;
   }
 
   getStatCardClasses(stat: StatCard): string {

@@ -9,10 +9,10 @@ import { DashboardStats, CloudNextStatus } from '../../models/cloud-next-app.mod
 interface StatCard {
   key: string;
   label: string;
+  icon: string;
   value: number;
   filterValue: CloudNextStatus | null;
-  colorClasses: string;
-  borderColor: string;
+  iconColor: string;
 }
 
 interface SelectedAppsInfo {
@@ -31,114 +31,93 @@ interface SelectedAppsInfo {
     MatTooltipModule
   ],
   template: `
-    <mat-card class="mb-4">
-      <mat-card-content>
-        <!-- Title -->
-        <h2 class="text-lg font-semibold text-gray-700 mb-4">Cloud Next Overview</h2>
+    <div class="mb-6">
+      <!-- Title -->
+      <h2 class="text-lg font-semibold text-gray-700 mb-4">Cloud Next Overview</h2>
 
-        <!-- Stats Row -->
-        <div class="flex flex-wrap gap-4 mb-6">
-          @for (stat of statCards; track stat.key) {
-            <div
-              [class]="getStatCardClasses(stat)"
-              (click)="onStatClick(stat.filterValue)"
-              (keydown.enter)="onStatClick(stat.filterValue)"
-              tabindex="0"
-              role="button"
-              [attr.aria-pressed]="activeFilter === stat.filterValue">
-              <div class="text-3xl font-bold text-gray-900">{{ stat.value }}</div>
-              <div class="text-sm text-gray-600 mt-1">{{ stat.label }}</div>
-            </div>
-          }
-        </div>
+      <!-- Stats Grid -->
+      <div class="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+        @for (stat of statCards; track stat.key) {
+          <mat-card
+            class="stat-card cursor-pointer transition-all"
+            [class.ring-2]="activeFilter === stat.filterValue"
+            [class.ring-blue-500]="activeFilter === stat.filterValue"
+            (click)="onStatClick(stat.filterValue)"
+            (keydown.enter)="onStatClick(stat.filterValue)"
+            tabindex="0"
+            role="button"
+            [attr.aria-pressed]="activeFilter === stat.filterValue">
+            <mat-card-header>
+              <div class="flex items-center gap-x-2">
+                <mat-icon class="!w-4 !h-4 !text-base" [ngClass]="stat.iconColor">{{ stat.icon }}</mat-icon>
+                <div class="font-medium tracking-tight text-gray-700">{{ stat.label }}</div>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="text-4xl font-semibold tabular-nums text-gray-900">{{ stat.value }}</div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
 
-        <!-- Divider -->
-        <div class="border-t border-gray-200 my-4"></div>
+      <!-- Actions Row -->
+      <div class="flex flex-wrap items-center gap-3 mt-6">
+        <!-- Add Apps -->
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="addApps.emit()">
+          <mat-icon>add</mat-icon>
+          Add Apps
+        </button>
 
-        <!-- Actions Row -->
-        <div class="flex flex-wrap items-center gap-3">
-          <!-- Add Apps -->
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="addApps.emit()">
-            <mat-icon>add</mat-icon>
-            Add Apps
-          </button>
+        <!-- Initialize -->
+        <button
+          mat-stroked-button
+          [disabled]="!canInitialize"
+          [matTooltip]="!canInitialize ? 'Select apps with New status' : ''"
+          (click)="initializeApps.emit()">
+          <mat-icon>play_arrow</mat-icon>
+          Initialize
+        </button>
 
-          <!-- Initialize -->
-          <button
-            mat-stroked-button
-            [disabled]="!canInitialize"
-            [matTooltip]="!canInitialize ? 'Select apps with New status' : ''"
-            (click)="initializeApps.emit()">
-            <mat-icon>play_arrow</mat-icon>
-            Initialize
-          </button>
+        <!-- Prepare for Dev -->
+        <button
+          mat-stroked-button
+          (click)="prepareForDev.emit()">
+          <mat-icon>build</mat-icon>
+          Prepare for Dev
+        </button>
 
-          <!-- Prepare for Dev -->
-          <button
-            mat-stroked-button
-            (click)="prepareForDev.emit()">
-            <mat-icon>build</mat-icon>
-            Prepare for Dev
-          </button>
+        <!-- Prepare for Stage -->
+        <button
+          mat-stroked-button
+          (click)="prepareForStage.emit()">
+          <mat-icon>inventory_2</mat-icon>
+          Prepare for Stage
+        </button>
 
-          <!-- Prepare for Stage -->
-          <button
-            mat-stroked-button
-            (click)="prepareForStage.emit()">
-            <mat-icon>inventory_2</mat-icon>
-            Prepare for Stage
-          </button>
+        <!-- Prepare for Prod -->
+        <button
+          mat-stroked-button
+          (click)="prepareForProd.emit()">
+          <mat-icon>rocket_launch</mat-icon>
+          Prepare for Prod
+        </button>
 
-          <!-- Prepare for Prod -->
-          <button
-            mat-stroked-button
-            (click)="prepareForProd.emit()">
-            <mat-icon>rocket_launch</mat-icon>
-            Prepare for Prod
-          </button>
-
-          <!-- Selection Info -->
-          @if (selectedApps.total > 0) {
-            <div class="ml-auto text-sm text-gray-600">
-              <span class="font-medium">Selected:</span> {{ selectedApps.total }} app(s)
-              @if (getSelectionSummary()) {
-                <span class="text-gray-400">({{ getSelectionSummary() }})</span>
-              }
-            </div>
-          }
-        </div>
-      </mat-card-content>
-    </mat-card>
+        <!-- Selection Info -->
+        @if (selectedApps.total > 0) {
+          <div class="ml-auto text-sm text-gray-600">
+            <span class="font-medium">Selected:</span> {{ selectedApps.total }} app(s)
+            @if (getSelectionSummary()) {
+              <span class="text-gray-400">({{ getSelectionSummary() }})</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
   `,
-  styles: [`
-    .stat-card {
-      flex: 1;
-      min-width: 140px;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border-top-width: 4px;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .stat-card:focus {
-      outline: 2px solid #3b82f6;
-      outline-offset: 2px;
-    }
-
-    .stat-card.active {
-      ring: 2px;
-      box-shadow: 0 0 0 2px #3b82f6;
-    }
-  `]
+  styles: []
 })
 export class DashboardOverviewComponent {
   @Input() stats: DashboardStats = {
@@ -173,55 +152,49 @@ export class DashboardOverviewComponent {
     return [
       {
         key: 'total',
-        label: 'Total CN Apps',
+        label: 'Total Apps',
+        icon: 'apps',
         value: this.stats.total,
         filterValue: null,
-        colorClasses: 'bg-blue-50 hover:bg-blue-100',
-        borderColor: 'border-blue-500'
+        iconColor: 'text-blue-600'
       },
       {
         key: 'notInitialized',
         label: 'Not Initialized',
+        icon: 'pending',
         value: this.stats.notInitialized,
         filterValue: 'new',
-        colorClasses: 'bg-gray-50 hover:bg-gray-100',
-        borderColor: 'border-gray-400'
+        iconColor: 'text-gray-500'
       },
       {
         key: 'inDev',
         label: 'In Dev',
+        icon: 'build',
         value: this.stats.inDev,
         filterValue: 'in_dev',
-        colorClasses: 'bg-amber-50 hover:bg-amber-100',
-        borderColor: 'border-amber-500'
+        iconColor: 'text-amber-600'
       },
       {
         key: 'inStage',
         label: 'In Stage',
+        icon: 'inventory_2',
         value: this.stats.inStage,
         filterValue: 'in_stage',
-        colorClasses: 'bg-purple-50 hover:bg-purple-100',
-        borderColor: 'border-purple-500'
+        iconColor: 'text-purple-600'
       },
       {
         key: 'inProd',
         label: 'In Prod',
+        icon: 'rocket_launch',
         value: this.stats.inProd,
         filterValue: 'in_prod',
-        colorClasses: 'bg-green-50 hover:bg-green-100',
-        borderColor: 'border-green-500'
+        iconColor: 'text-green-600'
       }
     ];
   }
 
   get canInitialize(): boolean {
     return this.selectedApps.byStatus['new'] > 0;
-  }
-
-  getStatCardClasses(stat: StatCard): string {
-    const isActive = this.activeFilter === stat.filterValue;
-    const activeClass = isActive ? 'active ring-2 ring-blue-500 ring-offset-2' : '';
-    return `stat-card ${stat.colorClasses} border-t-4 ${stat.borderColor} ${activeClass}`;
   }
 
   onStatClick(filterValue: CloudNextStatus | null): void {

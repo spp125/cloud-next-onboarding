@@ -95,3 +95,27 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     border-radius: 12px;
   }
 }
+
+/* Dashboard Stat Cards */
+.stat-card {
+  background-color: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  .mat-mdc-card-header {
+    padding: 16px 16px 8px 16px;
+  }
+
+  .mat-mdc-card-content {
+    padding: 0 16px 16px 16px;
+  }
+}

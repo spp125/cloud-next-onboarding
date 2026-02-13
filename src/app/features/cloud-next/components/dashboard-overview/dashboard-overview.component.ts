@@ -11,6 +11,7 @@ interface StatCard {
   label: string;
   icon: string;
   value: number;
+  percentage: number | null;
   filterValue: CloudNextStatus | null;
   iconColor: string;
 }
@@ -55,6 +56,12 @@ interface SelectedAppsInfo {
             </mat-card-header>
             <mat-card-content>
               <div class="text-4xl font-semibold tabular-nums text-gray-900">{{ stat.value }}</div>
+              @if (stat.percentage !== null) {
+                <div class="mt-2 flex items-center gap-x-1 text-sm font-medium text-neutral-500">
+                  <span [ngClass]="stat.percentage > 0 ? 'text-green-600' : 'text-gray-500'">{{ stat.percentage }}%</span>
+                  <span>of total</span>
+                </div>
+              }
             </mat-card-content>
           </mat-card>
         }
@@ -149,12 +156,16 @@ export class DashboardOverviewComponent {
   @Output() prepareForProd = new EventEmitter<void>();
 
   get statCards(): StatCard[] {
+    const total = this.stats.total;
+    const calcPercent = (value: number) => total > 0 ? Math.round((value / total) * 100) : 0;
+
     return [
       {
         key: 'total',
         label: 'Total Apps',
         icon: 'apps',
         value: this.stats.total,
+        percentage: null,
         filterValue: null,
         iconColor: 'text-blue-600'
       },
@@ -163,6 +174,7 @@ export class DashboardOverviewComponent {
         label: 'Not Initialized',
         icon: 'pending',
         value: this.stats.notInitialized,
+        percentage: calcPercent(this.stats.notInitialized),
         filterValue: 'new',
         iconColor: 'text-gray-500'
       },
@@ -171,6 +183,7 @@ export class DashboardOverviewComponent {
         label: 'In Dev',
         icon: 'build',
         value: this.stats.inDev,
+        percentage: calcPercent(this.stats.inDev),
         filterValue: 'in_dev',
         iconColor: 'text-amber-600'
       },
@@ -179,6 +192,7 @@ export class DashboardOverviewComponent {
         label: 'In Stage',
         icon: 'inventory_2',
         value: this.stats.inStage,
+        percentage: calcPercent(this.stats.inStage),
         filterValue: 'in_stage',
         iconColor: 'text-purple-600'
       },
@@ -187,6 +201,7 @@ export class DashboardOverviewComponent {
         label: 'In Prod',
         icon: 'rocket_launch',
         value: this.stats.inProd,
+        percentage: calcPercent(this.stats.inProd),
         filterValue: 'in_prod',
         iconColor: 'text-green-600'
       }

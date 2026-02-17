@@ -14,11 +14,11 @@ export type CloudNextStatus = 'new' | 'initialized' | 'in_dev' | 'in_stage' | 'i
 export interface CloudNextMetadata {
   unityProjectName: string | null;
   isSharedAccount: boolean | null;
-  environmentType: 'NP' | 'PROD' | null;
-  awsRegion: string | null;
+  isPNpAccount: boolean; // true = DEV-NP + PROD only (no Stage), false = DEV-NP + QA + PROD
+  awsRegions: string[]; // e.g., ['us-east-1', 'us-west-2']
   awsAccounts: {
     devNp: string | null;
-    qa: string | null;
+    qa: string | null; // null for P_NP accounts
     prod: string | null;
   } | null;
   ciorSize: string | null;

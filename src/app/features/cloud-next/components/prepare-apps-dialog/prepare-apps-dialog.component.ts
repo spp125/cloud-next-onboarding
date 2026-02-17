@@ -244,8 +244,8 @@ const PREPARE_CONFIGS: Record<PrepareType, PrepareConfig> = {
                           <p class="text-gray-900">{{ app.cloudNextMetadata?.unityProjectName || '-' }}</p>
                         </div>
                         <div>
-                          <span class="text-gray-500 font-medium">AWS Region</span>
-                          <p class="text-gray-900">{{ app.cloudNextMetadata?.awsRegion || '-' }}</p>
+                          <span class="text-gray-500 font-medium">AWS Regions</span>
+                          <p class="text-gray-900">{{ app.cloudNextMetadata?.awsRegions?.join(', ') || '-' }}</p>
                         </div>
                         <div>
                           <span class="text-gray-500 font-medium">OU</span>
@@ -255,10 +255,12 @@ const PREPARE_CONFIGS: Record<PrepareType, PrepareConfig> = {
                           <span class="text-gray-500 font-medium">Dev/NP Account</span>
                           <p class="text-gray-900">{{ app.cloudNextMetadata?.awsAccounts?.devNp || '-' }}</p>
                         </div>
-                        <div>
-                          <span class="text-gray-500 font-medium">QA Account</span>
-                          <p class="text-gray-900">{{ app.cloudNextMetadata?.awsAccounts?.qa || '-' }}</p>
-                        </div>
+                        @if (!app.cloudNextMetadata?.isPNpAccount) {
+                          <div>
+                            <span class="text-gray-500 font-medium">QA Account</span>
+                            <p class="text-gray-900">{{ app.cloudNextMetadata?.awsAccounts?.qa || '-' }}</p>
+                          </div>
+                        }
                         <div>
                           <span class="text-gray-500 font-medium">Prod Account</span>
                           <p class="text-gray-900">{{ app.cloudNextMetadata?.awsAccounts?.prod || '-' }}</p>
@@ -268,8 +270,8 @@ const PREPARE_CONFIGS: Record<PrepareType, PrepareConfig> = {
                           <p class="text-gray-900">{{ app.cloudNextMetadata?.ciorSize ? '/' + app.cloudNextMetadata.ciorSize : '-' }}</p>
                         </div>
                         <div>
-                          <span class="text-gray-500 font-medium">Environment Type</span>
-                          <p class="text-gray-900">{{ app.cloudNextMetadata?.environmentType || '-' }}</p>
+                          <span class="text-gray-500 font-medium">Account Type</span>
+                          <p class="text-gray-900">{{ app.cloudNextMetadata?.isPNpAccount ? 'P_NP (Dev → Prod)' : 'Standard (Dev → QA → Prod)' }}</p>
                         </div>
                         <div>
                           <span class="text-gray-500 font-medium">Shared Account</span>

@@ -33,8 +33,8 @@ export class CloudNextService {
       cloudNextMetadata: {
         unityProjectName: 'proj-payments',
         isSharedAccount: true,
-        environmentType: 'NP',
-        awsRegion: 'us-east-1',
+        isPNpAccount: false, // Standard: DEV-NP, QA, PROD
+        awsRegions: ['us-east-1'],
         awsAccounts: { devNp: 'shared-dev-001', qa: 'shared-qa-001', prod: 'shared-prod-001' },
         ciorSize: 'Small',
         ou: 'default',
@@ -53,8 +53,8 @@ export class CloudNextService {
       cloudNextMetadata: {
         unityProjectName: null,
         isSharedAccount: null,
-        environmentType: null,
-        awsRegion: null,
+        isPNpAccount: false,
+        awsRegions: [],
         awsAccounts: null,
         ciorSize: null,
         ou: null,
@@ -73,9 +73,9 @@ export class CloudNextService {
       cloudNextMetadata: {
         unityProjectName: 'proj-notifications',
         isSharedAccount: false,
-        environmentType: 'PROD',
-        awsRegion: 'us-west-2',
-        awsAccounts: { devNp: 'notif-dev-001', qa: 'notif-qa-001', prod: 'notif-prod-001' },
+        isPNpAccount: true, // P_NP: DEV-NP, PROD only (no QA/Stage)
+        awsRegions: ['us-west-2', 'us-east-1'],
+        awsAccounts: { devNp: 'notif-dev-001', qa: null, prod: 'notif-prod-001' },
         ciorSize: 'Medium',
         ou: 'engineering',
         deployers: null,
@@ -93,8 +93,8 @@ export class CloudNextService {
       cloudNextMetadata: {
         unityProjectName: 'proj-analytics',
         isSharedAccount: true,
-        environmentType: 'PROD',
-        awsRegion: 'us-east-1',
+        isPNpAccount: false, // Standard: DEV-NP, QA, PROD
+        awsRegions: ['us-east-1', 'eu-west-1'],
         awsAccounts: { devNp: 'analytics-dev', qa: 'analytics-qa', prod: 'analytics-prod' },
         ciorSize: 'Large',
         ou: 'data',
@@ -113,9 +113,9 @@ export class CloudNextService {
       cloudNextMetadata: {
         unityProjectName: 'proj-inventory',
         isSharedAccount: false,
-        environmentType: 'PROD',
-        awsRegion: 'us-east-1',
-        awsAccounts: { devNp: 'inv-dev', qa: 'inv-qa', prod: 'inv-prod' },
+        isPNpAccount: true, // P_NP: DEV-NP, PROD only
+        awsRegions: ['us-east-1'],
+        awsAccounts: { devNp: 'inv-dev', qa: null, prod: 'inv-prod' },
         ciorSize: 'Medium',
         ou: 'operations',
         deployers: ['ops-deployer'],
@@ -239,6 +239,7 @@ export class CloudNextService {
     // Update mock data for initialized apps
     request.apps.forEach(appRequest => {
       const existingApp = this.mockApps.find(a => a.appId === appRequest.appId);
+      const isPNp = appRequest.cloudNextMetadata.isPNpAccount ?? false;
       if (existingApp) {
         existingApp.status = 'initialized';
         existingApp.isCloudNextCandidate = true;
@@ -246,11 +247,11 @@ export class CloudNextService {
         existingApp.cloudNextMetadata = {
           unityProjectName: appRequest.cloudNextMetadata.unityProject,
           isSharedAccount: appRequest.cloudNextMetadata.isSharedAccount ?? null,
-          environmentType: appRequest.cloudNextMetadata.isPNpAccount ? 'NP' : 'PROD',
-          awsRegion: appRequest.cloudNextMetadata.awsRegions[0] ?? null,
+          isPNpAccount: isPNp,
+          awsRegions: appRequest.cloudNextMetadata.awsRegions ?? [],
           awsAccounts: appRequest.cloudNextMetadata.awsAccountNames ? {
             devNp: appRequest.cloudNextMetadata.awsAccountNames['DEV/NP'] ?? null,
-            qa: appRequest.cloudNextMetadata.awsAccountNames['QA'] ?? null,
+            qa: isPNp ? null : (appRequest.cloudNextMetadata.awsAccountNames['QA'] ?? null),
             prod: appRequest.cloudNextMetadata.awsAccountNames['PROD'] ?? null
           } : null,
           ciorSize: appRequest.cloudNextMetadata.cidrSize?.toString() ?? null,
@@ -271,11 +272,11 @@ export class CloudNextService {
           cloudNextMetadata: {
             unityProjectName: appRequest.cloudNextMetadata.unityProject,
             isSharedAccount: appRequest.cloudNextMetadata.isSharedAccount ?? null,
-            environmentType: appRequest.cloudNextMetadata.isPNpAccount ? 'NP' : 'PROD',
-            awsRegion: appRequest.cloudNextMetadata.awsRegions[0] ?? null,
+            isPNpAccount: isPNp,
+            awsRegions: appRequest.cloudNextMetadata.awsRegions ?? [],
             awsAccounts: appRequest.cloudNextMetadata.awsAccountNames ? {
               devNp: appRequest.cloudNextMetadata.awsAccountNames['DEV/NP'] ?? null,
-              qa: appRequest.cloudNextMetadata.awsAccountNames['QA'] ?? null,
+              qa: isPNp ? null : (appRequest.cloudNextMetadata.awsAccountNames['QA'] ?? null),
               prod: appRequest.cloudNextMetadata.awsAccountNames['PROD'] ?? null
             } : null,
             ciorSize: appRequest.cloudNextMetadata.cidrSize?.toString() ?? null,

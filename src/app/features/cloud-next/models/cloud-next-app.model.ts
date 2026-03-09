@@ -12,19 +12,20 @@ export interface CloudNextApp {
 export type CloudNextStatus = 'new' | 'initialized' | 'in_dev' | 'in_stage' | 'in_prod';
 
 export interface CloudNextMetadata {
-  unityProjectName: string | null;
   isSharedAccount: boolean | null;
-  isPNpAccount: boolean; // true = DEV-NP + PROD only (no Stage), false = DEV-NP + QA + PROD
+  isPnpAccount: boolean; // true = DEV-NP + PROD only (no Stage), false = DEV-NP + QA + PROD
   awsRegions: string[]; // e.g., ['us-east-1', 'us-west-2']
-  awsAccounts: {
-    devNp: string | null;
-    qa: string | null; // null for P_NP accounts
-    prod: string | null;
+  awsAccountNames: {
+    'DEV/NP'?: string | null;
+    'QA'?: string | null; // null for P_NP accounts
+    'PROD'?: string | null;
   } | null;
-  ciorSize: string | null;
+  cidrSize: number | null;
+  numberOfAzs: number | null;
   ou: string | null;
   deployers: string[] | null;
   contributors: string[] | null;
+  unity: Unity | null;
 }
 
 export interface DashboardStats {
@@ -62,9 +63,8 @@ export interface CloudNextAppRequest {
 }
 
 export interface InitCloudNextMetadata {
-  unityProject: string;
   isSharedAccount?: boolean;
-  isPNpAccount?: boolean;
+  isPnpAccount?: boolean;
   awsRegions: string[];
   awsAccountNames?: AwsAccountNames;
   cidrSize?: number;
@@ -72,6 +72,14 @@ export interface InitCloudNextMetadata {
   ou?: string;
   deployers?: string[];
   contributors?: string[];
+  unity?: Unity;
+}
+
+export interface Unity {
+  projectName: string;
+  projectShortCode: string;
+  artifactoryNameSpace: string;
+  iamPolicies: string[];
 }
 
 export interface AwsAccountNames {
@@ -86,6 +94,18 @@ export interface InitCloudNextResponse {
   failed: { appId: string; reason: string }[];
 }
 
+// Migration Source Servers
+export interface MigrationServerEnv {
+  noServers: boolean | null; // null = unconfigured, true = no servers, false = has servers
+  servers: string[];
+}
+
+export interface MigrationSourceServers {
+  dev: MigrationServerEnv;
+  stage: MigrationServerEnv;
+  prod: MigrationServerEnv;
+}
+
 // Row state for Initialize Apps Dialog
 export type InitRowValidationState = 'valid' | 'warning' | 'error';
 
@@ -93,9 +113,14 @@ export interface InitAppRow {
   appId: string;
   appName: string;
   owner?: string;
+  // Unity Config
   unityProject: string;
+  shortCode: string;
+  artifactoryNameSpace: string;
+  iamPolicies: string[];
+  // AWS Config
   isSharedAccount: boolean;
-  isPNpAccount: boolean;
+  isPnpAccount: boolean;
   awsRegions: string[];
   devNpAccount: string;
   qaAccount: string;
@@ -105,6 +130,7 @@ export interface InitAppRow {
   ou: string;
   deployers: string;
   contributors: string;
+  migrationSourceServers: MigrationSourceServers;
   validationState: InitRowValidationState;
   isExisting: boolean; // true if app already exists in main table
 }

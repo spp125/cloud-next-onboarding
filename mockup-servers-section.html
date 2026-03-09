@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Migration Source Servers – Section Mockup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    body { font-family: 'Google Sans', Roboto, sans-serif; background: #f0f2f5; }
+
+    /* Section card */
+    .section-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .section-header:hover { background: #f1f5f9; }
+    .section-icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: #eff6ff;
+      color: #3b82f6;
+      flex-shrink: 0;
+    }
+    .section-icon .material-icons-round { font-size: 18px; }
+    .section-chevron {
+      margin-left: auto;
+      color: #94a3b8;
+      transition: transform 0.2s ease;
+    }
+    .section-chevron.open { transform: rotate(180deg); }
+
+    /* Env block */
+    .env-block {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .env-label-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .env-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #475569;
+    }
+    .env-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Choice toggle (No servers / Add servers) */
+    .choice-toggle {
+      display: inline-flex;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+    .choice-btn {
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      line-height: 1.8;
+    }
+    .choice-btn .material-icons-round { font-size: 13px; }
+    .choice-btn:hover { background: #f1f5f9; color: #1e293b; }
+    .choice-btn.active-none {
+      background: #fef9c3;
+      color: #854d0e;
+      font-weight: 600;
+    }
+    .choice-btn.active-servers {
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-weight: 600;
+    }
+    .choice-divider {
+      width: 1px;
+      background: #e2e8f0;
+      align-self: stretch;
+    }
+
+    /* Server list */
+    .server-entry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .server-input {
+      flex: 1;
+      padding: 6px 10px;
+      font-size: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.15s;
+      color: #1e293b;
+    }
+    .server-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+    .server-input::placeholder { color: #9ca3af; }
+    .remove-btn {
+      width: 26px; height: 26px;
+      border-radius: 5px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.12s;
+      flex-shrink: 0;
+    }
+    .remove-btn:hover { background: #fee2e2; color: #ef4444; }
+    .remove-btn .material-icons-round { font-size: 15px; }
+
+    .add-server-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #3b82f6;
+      border: 1px dashed #93c5fd;
+      border-radius: 6px;
+      background: #eff6ff;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .add-server-btn:hover { background: #dbeafe; border-color: #3b82f6; }
+    .add-server-btn .material-icons-round { font-size: 14px; }
+
+    /* No-servers confirmed state */
+    .no-servers-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #fefce8;
+      border: 1px solid #fde047;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #854d0e;
+    }
+    .no-servers-badge .material-icons-round { font-size: 14px; color: #ca8a04; }
+
+    /* Context: dialog shell */
+    .dialog-shell {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      overflow: hidden;
+      max-width: 820px;
+      width: 100%;
+    }
+
+    /* Section state badges in section header */
+    .state-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-8">
+
+  <div class="dialog-shell">
+
+    <!-- Dialog Header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+      <div>
+        <h2 class="text-base font-semibold text-gray-900">Initialize Apps for Cloud Next</h2>
+        <p class="text-xs text-gray-500 mt-0.5">APP002 · User Auth Service · <span class="text-gray-400">John Doe</span></p>
+      </div>
+      <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">
+        <span class="material-icons-round text-lg">close</span>
+      </button>
+    </div>
+
+    <!-- Sections -->
+    <div class="p-5 flex flex-col gap-4 bg-gray-50" style="max-height: 78vh; overflow-y: auto;">
+
+      <!-- ─── Section 1: Unity Config (collapsed / done) ─── -->
+      <div class="section-card opacity-80">
+        <div class="section-header" onclick="toggle('unity')">
+          <div class="section-icon" style="background:#f0fdf4; color:#16a34a;">
+            <span class="material-icons-round">layers</span>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-gray-800">Unity Configuration</p>
+            <p class="text-xs text-gray-500">Project, namespace, and IAM policies</p>
+          </div>
+          <!-- Summary chips when collapsed -->
+          <div id="unity-summary" class="ml-4 flex items-center gap-2">
+            <span class="state-chip bg-green-50 text-green-700">
+              <span class="material-icons-round" style="font-size:12px">check_circle</span>
+              proj-auth
+            </span>
+          </div>
+          <span class="material-icons-round section-chevron" id="unity-chevron">expand_more</span>
+        </div>
+        <div id="unity-body" class="hidden px-5 py-4">
+          <p class="text-xs text-gray-400 italic">Unity fields go here...</p>
+        </div>
+      </div>
+
+      <!-- ─── Section 2: AWS Config (collapsed / done) ─── -->
+      <div class="section-card opacity-80">
+        <div class="section-header" onclick="toggle('aws')">
+          <div class="section-icon" style="background:#fff7ed; color:#ea580c;">
+            <span class="material-icons-round">cloud</span>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-gray-800">AWS Configuration</p>
+            <p class="text-xs text-gray-500">Regions, accounts, CIDR, and AZs</p>
+          </div>
+          <div id="aws-summary" class="ml-4 flex items-center gap-2">
+            <span class="state-chip bg-orange-50 text-orange-700">
+              <span class="material-icons-round" style="font-size:12px">warning</span>
+              Accounts missing
+            </span>
+          </div>
+          <span class="material-icons-round section-chevron" id="aws-chevron">expand_more</span>
+        </div>
+        <div id="aws-body" class="hidden px-5 py-4">
+          <p class="text-xs text-gray-400 italic">AWS fields go here...</p>
+        </div>
+      </div>
+
+      <!-- ─── Section 3: Migration Source Servers (MAIN FOCUS) ─── -->
+      <div class="section-card">
+        <div class="section-header" onclick="toggle('servers')">
+          <div class="section-icon">
+            <span class="material-icons-round">dns</span>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-gray-800">Migration Source Servers</p>
+            <p class="text-xs text-gray-500">On-prem or legacy servers being migrated, per environment</p>
+          </div>
+          <div id="servers-summary" class="ml-4 flex items-center gap-2">
+            <span class="state-chip bg-gray-100 text-gray-500">
+              <span class="material-icons-round" style="font-size:12px">pending</span>
+              Not configured
+            </span>
+          </div>
+          <span class="material-icons-round section-chevron open" id="servers-chevron">expand_more</span>
+        </div>
+
+        <div id="servers-body" class="px-5 py-4 flex flex-col gap-4">
+
+          <p class="text-xs text-gray-500 -mt-1 mb-1">
+            For each environment, explicitly choose <strong>No servers</strong> (none being migrated) or list the source server hostnames.
+          </p>
+
+          <!-- DEV/NP -->
+          <div class="env-block" id="env-dev">
+            <div class="env-label-bar">
+              <span class="env-badge">
+                <span class="env-dot bg-blue-400"></span>
+                Dev / NP
+              </span>
+              <div class="choice-toggle">
+                <button class="choice-btn" onclick="setEnv('dev','none')" id="dev-none-btn">
+                  <span class="material-icons-round">block</span>
+                  No servers
+                </button>
+                <div class="choice-divider"></div>
+                <button class="choice-btn active-servers" onclick="setEnv('dev','servers')" id="dev-servers-btn">
+                  <span class="material-icons-round">dns</span>
+                  Add servers
+                </button>
+              </div>
+            </div>
+            <!-- Server list state -->
+            <div class="px-4 py-3 flex flex-col gap-2" id="dev-server-list">
+              <div class="server-entry">
+                <span class="material-icons-round text-gray-300 text-base flex-shrink-0">drag_indicator</span>
+                <input class="server-input" type="text" value="web-auth-01.internal.corp" placeholder="hostname or IP">
+                <button class="remove-btn"><span class="material-icons-round">close</span></button>
+              </div>
+              <div class="server-entry">
+                <span class="material-icons-round text-gray-300 text-base flex-shrink-0">drag_indicator</span>
+                <input class="server-input" type="text" value="web-auth-02.internal.corp" placeholder="hostname or IP">
+                <button class="remove-btn"><span class="material-icons-round">close</span></button>
+              </div>
+              <div>
+                <button class="add-server-btn mt-1" onclick="addServer('dev')">
+                  <span class="material-icons-round">add</span>
+                  Add server
+                </button>
+              </div>
+            </div>
+            <div class="px-4 py-3 hidden" id="dev-no-servers">
+              <div class="no-servers-badge">
+                <span class="material-icons-round">block</span>
+                No source servers — explicitly confirmed
+              </div>
+            </div>
+          </div>
+
+          <!-- STAGE -->
+          <div class="env-block" id="env-stage">
+            <div class="env-label-bar">
+              <span class="env-badge">
+                <span class="env-dot bg-amber-400"></span>
+                Stage
+              </span>
+              <div class="choice-toggle">
+                <button class="choice-btn active-none" onclick="setEnv('stage','none')" id="stage-none-btn">
+                  <span class="material-icons-round">block</span>
+                  No servers
+                </button>
+                <div class="choice-divider"></div>
+                <button class="choice-btn" onclick="setEnv('stage','servers')" id="stage-servers-btn">
+                  <span class="material-icons-round">dns</span>
+                  Add servers
+                </button>
+              </div>
+            </div>
+            <div class="px-4 py-3 hidden" id="stage-server-list">
+              <div class="flex flex-col gap-2">
+                <div class="server-entry">
+                  <span class="material-icons-round text-gray-300 text-base flex-shrink-0">drag_indicator</span>
+                  <input class="server-input" type="text" placeholder="hostname or IP">
+                  <button class="remove-btn"><span class="material-icons-round">close</span></button>
+                </div>
+              </div>
+              <button class="add-server-btn mt-2" onclick="addServer('stage')">
+                <span class="material-icons-round">add</span>
+                Add server
+              </button>
+            </div>
+            <div class="px-4 py-3" id="stage-no-servers">
+              <div class="no-servers-badge">
+                <span class="material-icons-round">block</span>
+                No source servers — explicitly confirmed
+              </div>
+            </div>
+          </div>
+
+          <!-- PROD -->
+          <div class="env-block" id="env-prod">
+            <div class="env-label-bar">
+              <span class="env-badge">
+                <span class="env-dot bg-red-400"></span>
+                Production
+              </span>
+              <div class="choice-toggle">
+                <button class="choice-btn" onclick="setEnv('prod','none')" id="prod-none-btn">
+                  <span class="material-icons-round">block</span>
+                  No servers
+                </button>
+                <div class="choice-divider"></div>
+                <button class="choice-btn" onclick="setEnv('prod','servers')" id="prod-servers-btn">
+                  <span class="material-icons-round">dns</span>
+                  Add servers
+                </button>
+              </div>
+            </div>
+            <!-- Unconfigured state -->
+            <div class="px-4 py-3" id="prod-unconfigured">
+              <p class="text-xs text-gray-400 italic">Select an option above to configure Production servers.</p>
+            </div>
+            <div class="px-4 py-3 hidden flex-col gap-2" id="prod-server-list">
+              <div class="flex flex-col gap-2" id="prod-server-entries">
+                <div class="server-entry">
+                  <span class="material-icons-round text-gray-300 text-base flex-shrink-0">drag_indicator</span>
+                  <input class="server-input" type="text" placeholder="hostname or IP">
+                  <button class="remove-btn"><span class="material-icons-round">close</span></button>
+                </div>
+              </div>
+              <button class="add-server-btn mt-2" onclick="addServer('prod')">
+                <span class="material-icons-round">add</span>
+                Add server
+              </button>
+            </div>
+            <div class="px-4 py-3 hidden" id="prod-no-servers">
+              <div class="no-servers-badge">
+                <span class="material-icons-round">block</span>
+                No source servers — explicitly confirmed
+              </div>
+            </div>
+          </div>
+
+          <!-- Section validation note -->
+          <div class="flex items-start gap-2 mt-1 p-3 bg-blue-50 border border-blue-100 rounded-lg">
+            <span class="material-icons-round text-blue-400 text-sm mt-0.5">info</span>
+            <p class="text-xs text-blue-700">
+              All environments must be explicitly configured (either <strong>No servers</strong> or at least one server entry) before this section is considered complete.
+            </p>
+          </div>
+
+        </div>
+      </div><!-- end section 3 -->
+
+    </div><!-- end sections -->
+
+    <!-- Footer -->
+    <div class="flex items-center justify-between px-6 py-3 border-t border-gray-200 bg-gray-50">
+      <div class="text-xs text-gray-500 flex items-center gap-1">
+        <span class="material-icons-round text-red-400" style="font-size:14px">error</span>
+        1 section incomplete
+      </div>
+      <div class="flex gap-2">
+        <button class="px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100">Cancel</button>
+        <button class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg opacity-50 cursor-not-allowed flex items-center gap-1.5" disabled>
+          <span class="material-icons-round text-base">rocket_launch</span>
+          Initialize App
+        </button>
+      </div>
+    </div>
+
+  </div><!-- end dialog-shell -->
+
+  <script>
+    // Toggle section expand/collapse
+    function toggle(section) {
+      const body = document.getElementById(`${section}-body`);
+      const chevron = document.getElementById(`${section}-chevron`);
+      const summary = document.getElementById(`${section}-summary`);
+      const isHidden = body.classList.contains('hidden');
+      body.classList.toggle('hidden', !isHidden);
+      chevron.classList.toggle('open', isHidden);
+      if (summary) summary.classList.toggle('hidden', isHidden);
+    }
+
+    // Set env choice
+    function setEnv(env, choice) {
+      const noneBtn = document.getElementById(`${env}-none-btn`);
+      const serversBtn = document.getElementById(`${env}-servers-btn`);
+      const serverList = document.getElementById(`${env}-server-list`);
+      const noServers = document.getElementById(`${env}-no-servers`);
+      const unconfigured = document.getElementById(`${env}-unconfigured`);
+
+      // Reset button states
+      noneBtn.className = 'choice-btn';
+      serversBtn.className = 'choice-btn';
+
+      if (choice === 'none') {
+        noneBtn.className = 'choice-btn active-none';
+        serverList.classList.add('hidden');
+        noServers.classList.remove('hidden');
+        if (unconfigured) unconfigured.classList.add('hidden');
+      } else {
+        serversBtn.className = 'choice-btn active-servers';
+        serverList.classList.remove('hidden');
+        serverList.style.display = 'flex';
+        serverList.style.flexDirection = 'column';
+        serverList.style.gap = '8px';
+        noServers.classList.add('hidden');
+        if (unconfigured) unconfigured.classList.add('hidden');
+      }
+    }
+
+    // Add server entry
+    function addServer(env) {
+      const list = document.getElementById(`${env}-server-list`);
+      const entries = list.querySelector('.flex-col') || list;
+      const addBtn = list.querySelector('.add-server-btn');
+
+      const entry = document.createElement('div');
+      entry.className = 'server-entry';
+      entry.innerHTML = `
+        <span class="material-icons-round text-gray-300 text-base flex-shrink-0">drag_indicator</span>
+        <input class="server-input" type="text" placeholder="hostname or IP" autofocus>
+        <button class="remove-btn" onclick="this.parentElement.remove()">
+          <span class="material-icons-round">close</span>
+        </button>
+      `;
+      list.insertBefore(entry, addBtn);
+      entry.querySelector('input').focus();
+    }
+  </script>
+
+</body>
+</html>

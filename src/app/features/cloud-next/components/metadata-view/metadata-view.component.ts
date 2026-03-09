@@ -24,33 +24,59 @@ import { CloudNextMetadata } from '../../models/cloud-next-app.model';
       }
 
       <!-- Grouped Metadata Sections -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- Project & Account Section -->
+        <!-- Unity Section -->
         <div class="bg-white rounded-lg border border-gray-200 p-4">
           <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
             <mat-icon class="!text-lg text-blue-500">folder</mat-icon>
-            <span class="font-semibold text-gray-700 text-sm">Project</span>
+            <span class="font-semibold text-gray-700 text-sm">Unity</span>
           </div>
           <div class="space-y-3">
             <div class="flex justify-between items-start">
-              <span class="text-xs text-gray-500">Unity Project</span>
-              @if (metadata.unityProjectName) {
-                <span class="text-sm font-medium text-gray-900">{{ metadata.unityProjectName }}</span>
-              } @else {
-                <span class="text-sm text-red-500">Not set</span>
-              }
+              <span class="text-xs text-gray-500">Project Name</span>
+              <span class="text-sm font-medium text-gray-900">{{ metadata.unity?.projectName || '—' }}</span>
             </div>
             <div class="flex justify-between items-start">
+              <span class="text-xs text-gray-500">Project Short Code</span>
+              <span class="text-sm font-mono text-gray-900">{{ metadata.unity?.projectShortCode || '—' }}</span>
+            </div>
+            <div class="flex justify-between items-start">
+              <span class="text-xs text-gray-500">Artifactory Namespace</span>
+              <span class="text-sm font-mono text-gray-900">{{ metadata.unity?.artifactoryNameSpace || '—' }}</span>
+            </div>
+            <div>
+              <span class="text-xs text-gray-500">IAM Policies</span>
+              @if (metadata.unity?.iamPolicies?.length) {
+                <div class="flex flex-wrap gap-1 mt-1">
+                  @for (policy of metadata.unity!.iamPolicies; track policy) {
+                    <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 text-xs font-mono">{{ policy }}</span>
+                  }
+                </div>
+              } @else {
+                <div class="text-sm text-gray-400 mt-1">—</div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Account & Network Section -->
+        <div class="bg-white rounded-lg border border-gray-200 p-4">
+          <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+            <mat-icon class="!text-lg text-purple-500">settings</mat-icon>
+            <span class="font-semibold text-gray-700 text-sm">Account & Network</span>
+          </div>
+          <div class="space-y-3">
+            <div class="flex justify-between items-start">
               <span class="text-xs text-gray-500">Account Type</span>
-              @if (metadata.isPNpAccount) {
+              @if (metadata.isPnpAccount) {
                 <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-700 text-xs font-medium">P_NP</span>
               } @else {
                 <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-xs font-medium">Standard</span>
               }
             </div>
             <div class="flex justify-between items-start">
-              <span class="text-xs text-gray-500">Shared</span>
+              <span class="text-xs text-gray-500">Shared Account</span>
               <span class="text-sm text-gray-900">{{ metadata.isSharedAccount ? 'Yes' : 'No' }}</span>
             </div>
             <div class="flex justify-between items-start">
@@ -59,7 +85,11 @@ import { CloudNextMetadata } from '../../models/cloud-next-app.model';
             </div>
             <div class="flex justify-between items-start">
               <span class="text-xs text-gray-500">CIDR Size</span>
-              <span class="text-sm text-gray-900">{{ metadata.ciorSize || '—' }}</span>
+              <span class="text-sm text-gray-900">{{ metadata.cidrSize ?? '—' }}</span>
+            </div>
+            <div class="flex justify-between items-start">
+              <span class="text-xs text-gray-500">Number of AZs</span>
+              <span class="text-sm text-gray-900">{{ metadata.numberOfAzs ?? '—' }}</span>
             </div>
           </div>
         </div>
@@ -84,30 +114,18 @@ import { CloudNextMetadata } from '../../models/cloud-next-app.model';
               }
             </div>
             <div class="flex justify-between items-start">
-              <span class="text-xs text-gray-500">Dev/NP Account</span>
-              @if (metadata.awsAccounts?.devNp) {
-                <span class="text-sm font-mono text-gray-900">{{ metadata.awsAccounts!.devNp }}</span>
-              } @else {
-                <span class="text-sm text-red-500">Not set</span>
-              }
+              <span class="text-xs text-gray-500">DEV/NP Account</span>
+              <span class="text-sm font-mono text-gray-900">{{ metadata.awsAccountNames?.['DEV/NP'] || '—' }}</span>
             </div>
-            @if (!metadata.isPNpAccount) {
+            @if (!metadata.isPnpAccount) {
               <div class="flex justify-between items-start">
                 <span class="text-xs text-gray-500">QA Account</span>
-                @if (metadata.awsAccounts?.qa) {
-                  <span class="text-sm font-mono text-gray-900">{{ metadata.awsAccounts!.qa }}</span>
-                } @else {
-                  <span class="text-sm text-red-500">Not set</span>
-                }
+                <span class="text-sm font-mono text-gray-900">{{ metadata.awsAccountNames?.['QA'] || '—' }}</span>
               </div>
             }
             <div class="flex justify-between items-start">
-              <span class="text-xs text-gray-500">Prod Account</span>
-              @if (metadata.awsAccounts?.prod) {
-                <span class="text-sm font-mono text-gray-900">{{ metadata.awsAccounts!.prod }}</span>
-              } @else {
-                <span class="text-sm text-gray-400">—</span>
-              }
+              <span class="text-xs text-gray-500">PROD Account</span>
+              <span class="text-sm font-mono text-gray-900">{{ metadata.awsAccountNames?.['PROD'] || '—' }}</span>
             </div>
           </div>
         </div>
@@ -162,12 +180,14 @@ export class MetadataViewComponent {
   get missingFields(): string[] {
     const missing: string[] = [];
 
-    if (!this.metadata.unityProjectName) missing.push('Unity Project');
+    if (!this.metadata.unity?.projectName) missing.push('Unity Project Name');
+    if (!this.metadata.unity?.projectShortCode) missing.push('Unity Short Code');
+    if (!this.metadata.unity?.artifactoryNameSpace) missing.push('Artifactory Namespace');
+    if (!this.metadata.unity?.iamPolicies?.length) missing.push('IAM Policies');
     if (!this.metadata.awsRegions?.length) missing.push('AWS Regions');
-    if (!this.metadata.awsAccounts?.devNp) missing.push('AWS Dev Account');
-    // QA account only required for non-P_NP accounts
-    if (!this.metadata.isPNpAccount && !this.metadata.awsAccounts?.qa) {
-      missing.push('AWS QA Account');
+    if (!this.metadata.awsAccountNames?.['DEV/NP']) missing.push('DEV/NP Account');
+    if (!this.metadata.isPnpAccount && !this.metadata.awsAccountNames?.['QA']) {
+      missing.push('QA Account');
     }
 
     return missing;

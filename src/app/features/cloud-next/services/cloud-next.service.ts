@@ -31,15 +31,16 @@ export class CloudNextService {
       isCloudNextCandidate: true,
       status: 'in_dev',
       cloudNextMetadata: {
-        unityProjectName: 'proj-payments',
         isSharedAccount: true,
-        isPNpAccount: false, // Standard: DEV-NP, QA, PROD
+        isPnpAccount: false,
         awsRegions: ['us-east-1'],
-        awsAccounts: { devNp: 'shared-dev-001', qa: 'shared-qa-001', prod: 'shared-prod-001' },
-        ciorSize: 'Small',
+        awsAccountNames: { 'DEV/NP': 'shared-dev-001', 'QA': 'shared-qa-001', 'PROD': 'shared-prod-001' },
+        cidrSize: 24,
+        numberOfAzs: 2,
         ou: 'default',
         deployers: ['user1', 'user2'],
-        contributors: ['user3', 'user4']
+        contributors: ['user3', 'user4'],
+        unity: { projectName: 'proj-payments', projectShortCode: 'PAY', artifactoryNameSpace: 'payments', iamPolicies: ['policy-1'] }
       }
     },
     {
@@ -51,15 +52,16 @@ export class CloudNextService {
       isCloudNextCandidate: true,
       status: 'new',
       cloudNextMetadata: {
-        unityProjectName: null,
         isSharedAccount: null,
-        isPNpAccount: false,
+        isPnpAccount: false,
         awsRegions: [],
-        awsAccounts: null,
-        ciorSize: null,
+        awsAccountNames: null,
+        cidrSize: null,
+        numberOfAzs: null,
         ou: null,
         deployers: null,
-        contributors: null
+        contributors: null,
+        unity: null
       }
     },
     {
@@ -71,15 +73,16 @@ export class CloudNextService {
       isCloudNextCandidate: true,
       status: 'new',
       cloudNextMetadata: {
-        unityProjectName: 'proj-notifications',
         isSharedAccount: false,
-        isPNpAccount: true, // P_NP: DEV-NP, PROD only (no QA/Stage)
+        isPnpAccount: true,
         awsRegions: ['us-west-2', 'us-east-1'],
-        awsAccounts: { devNp: 'notif-dev-001', qa: null, prod: 'notif-prod-001' },
-        ciorSize: 'Medium',
+        awsAccountNames: { 'DEV/NP': 'notif-dev-001', 'PROD': 'notif-prod-001' },
+        cidrSize: 22,
+        numberOfAzs: 3,
         ou: 'engineering',
         deployers: null,
-        contributors: null
+        contributors: null,
+        unity: { projectName: 'proj-notifications', projectShortCode: 'NOT', artifactoryNameSpace: 'notifications', iamPolicies: ['policy-2'] }
       }
     },
     {
@@ -91,15 +94,16 @@ export class CloudNextService {
       isCloudNextCandidate: true,
       status: 'in_stage',
       cloudNextMetadata: {
-        unityProjectName: 'proj-analytics',
         isSharedAccount: true,
-        isPNpAccount: false, // Standard: DEV-NP, QA, PROD
+        isPnpAccount: false,
         awsRegions: ['us-east-1', 'eu-west-1'],
-        awsAccounts: { devNp: 'analytics-dev', qa: 'analytics-qa', prod: 'analytics-prod' },
-        ciorSize: 'Large',
+        awsAccountNames: { 'DEV/NP': 'analytics-dev', 'QA': 'analytics-qa', 'PROD': 'analytics-prod' },
+        cidrSize: 20,
+        numberOfAzs: 2,
         ou: 'data',
         deployers: ['deployer1'],
-        contributors: ['contrib1', 'contrib2']
+        contributors: ['contrib1', 'contrib2'],
+        unity: { projectName: 'proj-analytics', projectShortCode: 'ANL', artifactoryNameSpace: 'analytics', iamPolicies: ['policy-3', 'policy-4'] }
       }
     },
     {
@@ -111,15 +115,16 @@ export class CloudNextService {
       isCloudNextCandidate: true,
       status: 'in_prod',
       cloudNextMetadata: {
-        unityProjectName: 'proj-inventory',
         isSharedAccount: false,
-        isPNpAccount: true, // P_NP: DEV-NP, PROD only
+        isPnpAccount: true,
         awsRegions: ['us-east-1'],
-        awsAccounts: { devNp: 'inv-dev', qa: null, prod: 'inv-prod' },
-        ciorSize: 'Medium',
+        awsAccountNames: { 'DEV/NP': 'inv-dev', 'PROD': 'inv-prod' },
+        cidrSize: 22,
+        numberOfAzs: 1,
         ou: 'operations',
         deployers: ['ops-deployer'],
-        contributors: ['ops-contrib']
+        contributors: ['ops-contrib'],
+        unity: { projectName: 'proj-inventory', projectShortCode: 'INV', artifactoryNameSpace: 'inventory', iamPolicies: ['policy-5'] }
       }
     }
   ];
@@ -239,51 +244,34 @@ export class CloudNextService {
     // Update mock data for initialized apps
     request.apps.forEach(appRequest => {
       const existingApp = this.mockApps.find(a => a.appId === appRequest.appId);
-      const isPNp = appRequest.cloudNextMetadata.isPNpAccount ?? false;
+      const meta = appRequest.cloudNextMetadata;
+      const newMetadata: CloudNextMetadata = {
+        isSharedAccount: meta.isSharedAccount ?? null,
+        isPnpAccount: meta.isPnpAccount ?? false,
+        awsRegions: meta.awsRegions ?? [],
+        awsAccountNames: meta.awsAccountNames ?? null,
+        cidrSize: meta.cidrSize ?? null,
+        numberOfAzs: meta.numberOfAzs ?? null,
+        ou: meta.ou ?? null,
+        deployers: meta.deployers ?? null,
+        contributors: meta.contributors ?? null,
+        unity: meta.unity ?? null
+      };
       if (existingApp) {
         existingApp.status = 'initialized';
         existingApp.isCloudNextCandidate = true;
-        existingApp.unityProject = appRequest.cloudNextMetadata.unityProject;
-        existingApp.cloudNextMetadata = {
-          unityProjectName: appRequest.cloudNextMetadata.unityProject,
-          isSharedAccount: appRequest.cloudNextMetadata.isSharedAccount ?? null,
-          isPNpAccount: isPNp,
-          awsRegions: appRequest.cloudNextMetadata.awsRegions ?? [],
-          awsAccounts: appRequest.cloudNextMetadata.awsAccountNames ? {
-            devNp: appRequest.cloudNextMetadata.awsAccountNames['DEV/NP'] ?? null,
-            qa: isPNp ? null : (appRequest.cloudNextMetadata.awsAccountNames['QA'] ?? null),
-            prod: appRequest.cloudNextMetadata.awsAccountNames['PROD'] ?? null
-          } : null,
-          ciorSize: appRequest.cloudNextMetadata.cidrSize?.toString() ?? null,
-          ou: appRequest.cloudNextMetadata.ou ?? null,
-          deployers: appRequest.cloudNextMetadata.deployers ?? null,
-          contributors: appRequest.cloudNextMetadata.contributors ?? null
-        };
+        existingApp.unityProject = meta.unity?.projectName ?? null;
+        existingApp.cloudNextMetadata = newMetadata;
       } else {
-        // Add new app to mock data
         this.mockApps.push({
           appId: appRequest.appId,
-          appName: appRequest.appId, // Will be fetched from real API
+          appName: appRequest.appId,
           owner: 'Unknown',
-          unityProject: appRequest.cloudNextMetadata.unityProject,
+          unityProject: meta.unity?.projectName ?? null,
           lifecycleStage: 'Active',
           isCloudNextCandidate: true,
           status: 'initialized',
-          cloudNextMetadata: {
-            unityProjectName: appRequest.cloudNextMetadata.unityProject,
-            isSharedAccount: appRequest.cloudNextMetadata.isSharedAccount ?? null,
-            isPNpAccount: isPNp,
-            awsRegions: appRequest.cloudNextMetadata.awsRegions ?? [],
-            awsAccounts: appRequest.cloudNextMetadata.awsAccountNames ? {
-              devNp: appRequest.cloudNextMetadata.awsAccountNames['DEV/NP'] ?? null,
-              qa: isPNp ? null : (appRequest.cloudNextMetadata.awsAccountNames['QA'] ?? null),
-              prod: appRequest.cloudNextMetadata.awsAccountNames['PROD'] ?? null
-            } : null,
-            ciorSize: appRequest.cloudNextMetadata.cidrSize?.toString() ?? null,
-            ou: appRequest.cloudNextMetadata.ou ?? null,
-            deployers: appRequest.cloudNextMetadata.deployers ?? null,
-            contributors: appRequest.cloudNextMetadata.contributors ?? null
-          }
+          cloudNextMetadata: newMetadata
         });
       }
     });

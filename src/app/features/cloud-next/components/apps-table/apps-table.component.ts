@@ -335,7 +335,7 @@ type RegionFilter = 'all' | string;
           <ng-container matColumnDef="accountType">
             <th mat-header-cell *matHeaderCellDef class="!font-semibold">Type</th>
             <td mat-cell *matCellDef="let row">
-              @if (row.cloudNextMetadata?.isPNpAccount) {
+              @if (row.cloudNextMetadata?.isPnpAccount) {
                 <span class="inline-flex items-center px-2 py-0.5 rounded bg-purple-100 text-purple-700 text-xs font-medium"
                       matTooltip="DEV-NP → PROD (no Stage)">
                   P_NP
@@ -663,7 +663,7 @@ export class AppsTableComponent {
     }
 
     // Optional but recommended fields
-    const hasAccounts = metadata?.awsAccounts?.devNp || metadata?.awsAccounts?.qa || metadata?.awsAccounts?.prod;
+    const hasAccounts = metadata?.awsAccountNames?.['DEV/NP'] || metadata?.awsAccountNames?.['QA'] || metadata?.awsAccountNames?.['PROD'];
     const hasDeployers = metadata?.deployers && metadata.deployers.length > 0;
 
     if (!hasAccounts || !hasDeployers) {
@@ -674,15 +674,15 @@ export class AppsTableComponent {
   }
 
   getAccountsStatus(app: CloudNextApp): string {
-    const accounts = app.cloudNextMetadata?.awsAccounts;
+    const accounts = app.cloudNextMetadata?.awsAccountNames;
     if (!accounts) return 'No accounts';
 
-    const isPNp = app.cloudNextMetadata?.isPNpAccount;
+    const isPNp = app.cloudNextMetadata?.isPnpAccount;
     const parts: string[] = [];
 
-    if (accounts.devNp) parts.push('Dev');
-    if (!isPNp && accounts.qa) parts.push('QA');
-    if (accounts.prod) parts.push('Prod');
+    if (accounts['DEV/NP']) parts.push('Dev');
+    if (!isPNp && accounts['QA']) parts.push('QA');
+    if (accounts['PROD']) parts.push('Prod');
 
     if (parts.length === 0) return 'No accounts';
 

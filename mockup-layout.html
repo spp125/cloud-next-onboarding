@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Initialize Apps – Layout Mockup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Roboto, sans-serif; background: #e8ecf0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+
+    .mi { font-family: 'Material Icons Round'; font-size: 18px; line-height: 1; vertical-align: middle; user-select: none; display: inline-block; }
+    .mi.sm  { font-size: 15px; }
+    .mi.xs  { font-size: 12px; }
+    .mi.xxs { font-size: 11px; }
+
+    /* ── Dialog shell ── */
+    .dialog {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.22);
+      width: 100%;
+      max-width: 1100px;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      flex-shrink: 0;
+    }
+
+    /* ── Add Apps Bar ── */
+    .apps-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f9fafb;
+      flex-shrink: 0;
+    }
+    .search-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 6px 12px;
+      background: #fff;
+    }
+    .search-wrap input { border: none; outline: none; font-size: 13px; color: #111827; flex: 1; }
+    .search-wrap input::placeholder { color: #9ca3af; }
+    .paste-input {
+      width: 180px;
+      padding: 6px 10px;
+      font-size: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      outline: none;
+      color: #111827;
+    }
+    .paste-input::placeholder { color: #9ca3af; }
+    .btn-primary {
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    /* ── Two-panel body ── */
+    .body { display: flex; flex: 1; overflow: hidden; }
+
+    /* LEFT: App list */
+    .app-list {
+      width: 200px;
+      flex-shrink: 0;
+      border-right: 1px solid #e5e7eb;
+      overflow-y: auto;
+      background: #fff;
+      padding: 8px;
+    }
+    .list-heading { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #9ca3af; padding: 4px 8px 6px; }
+    .app-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .app-item:hover { background: #f8fafc; }
+    .app-item.active { background: #eff6ff; }
+    .app-item .info { flex: 1; min-width: 0; }
+    .app-item .app-id { font-size: 12px; font-weight: 600; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .app-item .app-name { font-size: 10px; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .app-item .rm-btn { background: none; border: none; cursor: pointer; color: #d1d5db; padding: 0; display: flex; align-items: center; }
+    .app-item .rm-btn:hover { color: #ef4444; }
+
+    /* RIGHT: Form panels */
+    .form-right { flex: 1; overflow-y: auto; background: #f8fafc; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+
+    /* App context bar */
+    .ctx-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .ctx-id { font-size: 11px; font-weight: 700; background: #eff6ff; color: #1d4ed8; padding: 2px 8px; border-radius: 4px; }
+    .ctx-name { font-size: 13px; font-weight: 600; color: #111827; }
+    .ctx-owner { font-size: 12px; color: #6b7280; }
+    .st-pill {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 500;
+    }
+    .st-pill.err  { background: #fef2f2; color: #b91c1c; }
+    .st-pill.warn { background: #fff7ed; color: #c2410c; }
+    .st-pill.ok   { background: #f0fdf4; color: #15803d; }
+    .st-pill.pend { background: #f1f5f9; color: #64748b; }
+
+    /* ── Section card ── */
+    .sec-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+    .sec-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1px solid transparent;
+      transition: background .12s;
+    }
+    .sec-head:hover { background: #f8fafc; }
+    .sec-head.open { border-bottom-color: #e5e7eb; }
+    .sec-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sec-icon .mi { font-size: 16px; }
+    .sec-title { font-size: 13px; font-weight: 600; color: #111827; }
+    .sec-sub   { font-size: 11px; color: #6b7280; margin-top: 1px; }
+    .sec-chevron { color: #9ca3af; transition: transform .2s; }
+    .sec-chevron.open { transform: rotate(180deg); }
+    .sec-body { padding: 16px; }
+
+    /* ── Section state chips ── */
+    .sec-chip {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 500; white-space: nowrap;
+    }
+    .sec-chip.ok   { background: #f0fdf4; color: #15803d; }
+    .sec-chip.err  { background: #fef2f2; color: #b91c1c; }
+    .sec-chip.warn { background: #fff7ed; color: #c2410c; }
+    .sec-chip.pend { background: #f1f5f9; color: #64748b; }
+
+    /* ── Fields ── */
+    .field-label { display: block; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: #6b7280; margin-bottom: 4px; }
+    .field-label .req { color: #ef4444; }
+    .field-input {
+      width: 100%; padding: 7px 10px; font-size: 13px;
+      border: 1px solid #d1d5db; border-radius: 6px;
+      outline: none; color: #111827; background: #fff;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .field-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
+    .field-input.err { border-color: #fca5a5; background: #fef2f2; }
+    .field-input::placeholder { color: #9ca3af; }
+    .field-input:disabled { background: #f9fafb; color: #9ca3af; cursor: not-allowed; }
+
+    select.field-input { appearance: auto; }
+
+    /* IAM chip input */
+    .chip-wrap {
+      display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+      border: 1px solid #d1d5db; border-radius: 6px;
+      padding: 5px 8px; background: #fff; cursor: text; min-height: 36px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .chip-wrap.err { border-color: #fca5a5; background: #fef2f2; }
+    .chip-wrap:focus-within { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
+    .chip {
+      display: inline-flex; align-items: center; gap: 3px;
+      background: #eff6ff; color: #1d4ed8; border-radius: 4px;
+      padding: 2px 6px; font-size: 11px; font-weight: 500;
+    }
+    .chip button { background: none; border: none; cursor: pointer; color: #93c5fd; font-size: 13px; line-height: 1; padding: 0; }
+    .chip button:hover { color: #1d4ed8; }
+    .chip-text { border: none; outline: none; background: transparent; font-size: 12px; color: #111827; flex: 1; min-width: 100px; }
+    .chip-text::placeholder { color: #9ca3af; }
+
+    /* Checkbox row */
+    .check-row { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #374151; cursor: pointer; user-select: none; }
+    .check-row input[type=checkbox] { accent-color: #3b82f6; width: 14px; height: 14px; cursor: pointer; }
+
+    /* ── Migration Source Servers ── */
+    .env-grid { display: flex; gap: 10px; }
+    .env-col { flex: 1; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; min-width: 0; }
+
+    .env-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 10px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; gap: 6px;
+    }
+    .env-name { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #374151; white-space: nowrap; }
+    .env-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    .choice-toggle { display: inline-flex; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; background: #f8fafc; flex-shrink: 0; }
+    .choice-btn {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 3px 10px; font-size: 11px; font-weight: 500;
+      border: none; background: transparent; color: #64748b;
+      cursor: pointer; transition: all .12s; white-space: nowrap;
+    }
+    .choice-btn:hover { background: #f1f5f9; color: #1e293b; }
+    .choice-btn.active-none    { background: #fef9c3; color: #854d0e; font-weight: 600; }
+    .choice-btn.active-servers { background: #eff6ff; color: #1d4ed8; font-weight: 600; }
+    .choice-divider { width: 1px; background: #e2e8f0; align-self: stretch; }
+
+    .env-body { padding: 10px; display: flex; flex-direction: column; gap: 7px; }
+    .env-empty { font-size: 11px; color: #9ca3af; font-style: italic; }
+
+    .no-srv-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 10px; background: #fefce8; border: 1px solid #fde047;
+      border-radius: 6px; font-size: 11px; font-weight: 500; color: #854d0e;
+    }
+
+    .srv-row { display: flex; align-items: center; gap: 6px; }
+    .srv-row input { flex: 1; padding: 5px 8px; font-size: 12px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; }
+    .srv-row input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,.1); }
+    .srv-row input::placeholder { color: #9ca3af; }
+    .srv-rm {
+      width: 24px; height: 24px; border: none; background: transparent; border-radius: 4px;
+      color: #9ca3af; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all .12s;
+    }
+    .srv-rm:hover { background: #fee2e2; color: #ef4444; }
+
+    .add-srv-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; font-size: 11px; font-weight: 500;
+      color: #3b82f6; border: 1px dashed #93c5fd; border-radius: 6px;
+      background: #eff6ff; cursor: pointer; transition: all .12s; align-self: flex-start;
+    }
+    .add-srv-btn:hover { background: #dbeafe; border-color: #3b82f6; }
+
+    /* ── Footer ── */
+    .dialog-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px; border-top: 1px solid #e5e7eb;
+      background: #f9fafb; flex-shrink: 0;
+    }
+    .btn-ghost {
+      padding: 7px 16px; font-size: 13px; border: 1px solid #d1d5db;
+      background: #fff; border-radius: 8px; cursor: pointer; color: #374151;
+    }
+    .btn-ghost:hover { background: #f9fafb; }
+    .btn-submit {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 18px; font-size: 13px; font-weight: 500;
+      background: #16a34a; color: #fff; border: none; border-radius: 8px; cursor: pointer;
+    }
+    .btn-submit:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-submit:not(:disabled):hover { background: #15803d; }
+
+    /* Grid helpers */
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  </style>
+</head>
+<body>
+
+<div class="dialog">
+
+  <!-- ── Header ── -->
+  <div class="dialog-header">
+    <div>
+      <p style="font-size:14px;font-weight:600;color:#111827">Initialize Apps for Cloud Next</p>
+      <p style="font-size:11px;color:#9ca3af;margin-top:1px">Add apps and complete metadata to initialize</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <!-- View toggle -->
+      <div style="display:inline-flex;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+        <button style="padding:5px 14px;font-size:12px;font-weight:500;background:#eff6ff;color:#1d4ed8;border:none;cursor:pointer;display:flex;align-items:center;gap:4px">
+          <span class="mi xs">view_agenda</span> Form
+        </button>
+        <button style="padding:5px 14px;font-size:12px;font-weight:500;background:#fff;color:#6b7280;border:none;cursor:pointer;border-left:1px solid #e2e8f0;display:flex;align-items:center;gap:4px">
+          <span class="mi xs">code</span> JSON
+        </button>
+      </div>
+      <button style="width:30px;height:30px;border:none;background:none;cursor:pointer;color:#9ca3af;display:flex;align-items:center;justify-content:center;border-radius:6px" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">
+        <span class="mi sm">close</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Add Apps Bar ── -->
+  <div class="apps-bar">
+    <div class="search-wrap">
+      <span class="mi sm" style="color:#9ca3af">search</span>
+      <input placeholder="Search by App ID or Name…">
+    </div>
+    <span style="font-size:12px;color:#9ca3af">or</span>
+    <input class="paste-input" placeholder="Paste App IDs…">
+    <button class="btn-primary">Add</button>
+  </div>
+
+  <!-- ── Toolbar ── -->
+  <div class="toolbar">
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#6b7280">
+      <span><strong style="color:#111827">3</strong> apps</span>
+      <span style="color:#d1d5db">|</span>
+      <span style="color:#ef4444;display:flex;align-items:center;gap:3px"><span class="mi xs">error</span> 1 with errors</span>
+      <span style="color:#d1d5db">·</span>
+      <span style="color:#f59e0b;display:flex;align-items:center;gap:3px"><span class="mi xs">warning</span> 1 with warnings</span>
+    </div>
+    <button style="font-size:11px;color:#6b7280;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:4px">
+      <span class="mi xs">content_copy</span> Copy config from first app
+    </button>
+  </div>
+
+  <!-- ── Body ── -->
+  <div class="body">
+
+    <!-- LEFT: App list -->
+    <div class="app-list">
+      <p class="list-heading">Apps (3)</p>
+
+      <!-- App 1: active, error -->
+      <div class="app-item active">
+        <span class="mi xs" style="color:#ef4444;flex-shrink:0">error</span>
+        <div class="info">
+          <div class="app-id">APP002</div>
+          <div class="app-name">User Auth Service</div>
+        </div>
+        <button class="rm-btn"><span class="mi xxs">close</span></button>
+      </div>
+
+      <!-- App 2: warning -->
+      <div class="app-item" onclick="selectApp(this, 1)">
+        <span class="mi xs" style="color:#f59e0b;flex-shrink:0">warning</span>
+        <div class="info">
+          <div class="app-id">APP010</div>
+          <div class="app-name">Compass Service</div>
+        </div>
+        <button class="rm-btn"><span class="mi xxs">close</span></button>
+      </div>
+
+      <!-- App 3: valid -->
+      <div class="app-item" onclick="selectApp(this, 2)">
+        <span class="mi xs" style="color:#16a34a;flex-shrink:0">check_circle</span>
+        <div class="info">
+          <div class="app-id">APP011</div>
+          <div class="app-name">Billing System</div>
+        </div>
+        <button class="rm-btn"><span class="mi xxs">close</span></button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Sections -->
+    <div class="form-right">
+
+      <!-- App context bar -->
+      <div class="ctx-bar">
+        <span class="ctx-id">APP002</span>
+        <span class="ctx-name">User Auth Service</span>
+        <span style="color:#e5e7eb">·</span>
+        <span class="ctx-owner">John Doe</span>
+        <div style="margin-left:auto">
+          <span class="st-pill err"><span class="mi xxs">error</span> Fields required</span>
+        </div>
+      </div>
+
+      <!-- ── Section 1: Unity Configuration ── -->
+      <div class="sec-card">
+        <div class="sec-head open" onclick="toggleSec('unity')">
+          <div class="sec-icon" style="background:#f0fdf4">
+            <span class="mi" style="color:#16a34a;font-size:17px">layers</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div class="sec-title">Unity Configuration</div>
+            <div class="sec-sub">Project, namespace, IAM policies, deployers</div>
+          </div>
+          <span class="sec-chip err" id="unity-chip"><span class="mi xxs">error</span> Required fields missing</span>
+          <span class="mi sec-chevron open" id="chev-unity">expand_more</span>
+        </div>
+
+        <div class="sec-body" id="unity-body">
+          <!-- Row 1 -->
+          <div class="grid-3" style="margin-bottom:12px">
+            <div>
+              <label class="field-label">Project Name <span class="req">*</span></label>
+              <input class="field-input err" placeholder="e.g. proj-auth" type="text" oninput="checkUnity()">
+            </div>
+            <div>
+              <label class="field-label">Short Code <span class="req">*</span></label>
+              <input class="field-input" placeholder="e.g. AUTH" type="text" value="AUTH">
+            </div>
+            <div>
+              <label class="field-label">Artifactory Namespace <span class="req">*</span></label>
+              <input class="field-input" placeholder="e.g. auth-service" type="text" value="auth-service">
+            </div>
+          </div>
+          <!-- IAM Policies chip input -->
+          <div style="margin-bottom:12px">
+            <label class="field-label">IAM Policies <span class="req">*</span></label>
+            <div class="chip-wrap" id="iam-wrap" onclick="document.getElementById('iam-input').focus()">
+              <span class="chip">deployer-security <button onclick="removeChip(this, event)">×</button></span>
+              <span class="chip">deployer-iam-service-role <button onclick="removeChip(this, event)">×</button></span>
+              <span class="chip">deployer-database <button onclick="removeChip(this, event)">×</button></span>
+              <input id="iam-input" class="chip-text" placeholder="Add more…" onkeydown="onIamKey(event)">
+            </div>
+            <p style="font-size:10px;color:#9ca3af;margin-top:3px">Press Enter or comma to add each policy</p>
+          </div>
+          <!-- Row 3 -->
+          <div class="grid-2">
+            <div>
+              <label class="field-label">Deployers</label>
+              <input class="field-input" placeholder="user1, user2" type="text">
+            </div>
+            <div>
+              <label class="field-label">Contributors</label>
+              <input class="field-input" placeholder="user1, user2" type="text">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Section 2: AWS Configuration ── -->
+      <div class="sec-card">
+        <div class="sec-head open" onclick="toggleSec('aws')">
+          <div class="sec-icon" style="background:#fff7ed">
+            <span class="mi" style="color:#ea580c;font-size:17px">cloud</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div class="sec-title">AWS Configuration</div>
+            <div class="sec-sub">Regions, account names, CIDR, AZs, and OU</div>
+          </div>
+          <span class="sec-chip warn"><span class="mi xxs">warning</span> Accounts missing</span>
+          <span class="mi sec-chevron open" id="chev-aws">expand_more</span>
+        </div>
+
+        <div class="sec-body" id="aws-body">
+          <!-- Row 1: Regions + checkboxes -->
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;align-items:end;margin-bottom:12px">
+            <div>
+              <label class="field-label">AWS Regions <span class="req">*</span></label>
+              <div class="chip-wrap" onclick="document.getElementById('region-input').focus()">
+                <span class="chip">us-east-1 <button onclick="removeChip(this, event)">×</button></span>
+                <input id="region-input" class="chip-text" placeholder="Add region…">
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:4px">
+              <label class="check-row">
+                <input type="checkbox"> New Account
+              </label>
+              <label class="check-row">
+                <input type="checkbox" id="pnp-chk" onchange="toggleStage()"> P/NP
+              </label>
+            </div>
+          </div>
+          <!-- Row 2: Account names -->
+          <div class="grid-3" style="margin-bottom:12px">
+            <div>
+              <label class="field-label">DEV / NP Account</label>
+              <input class="field-input" placeholder="Account name or ID" type="text">
+            </div>
+            <div>
+              <label class="field-label">Stage Account</label>
+              <input class="field-input" placeholder="Account name or ID" type="text" id="stage-acct">
+            </div>
+            <div>
+              <label class="field-label">Prod Account</label>
+              <input class="field-input" placeholder="Account name or ID" type="text">
+            </div>
+          </div>
+          <!-- Row 3 -->
+          <div class="grid-3">
+            <div>
+              <label class="field-label">CIDR Size</label>
+              <select class="field-input">
+                <option>Select…</option>
+                <option>/16</option><option selected>/24</option><option>/20</option><option>/28</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Number of AZs</label>
+              <select class="field-input">
+                <option>Select…</option>
+                <option>1</option><option selected>2</option><option>3</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Organizational Unit (OU)</label>
+              <input class="field-input" placeholder="e.g. engineering" type="text">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Section 3: Migration Source Servers ── -->
+      <div class="sec-card">
+        <div class="sec-head open" onclick="toggleSec('srv')">
+          <div class="sec-icon" style="background:#eff6ff">
+            <span class="mi" style="color:#2563eb;font-size:17px">dns</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div class="sec-title">Migration Source Servers</div>
+            <div class="sec-sub">On-prem servers being migrated, per environment</div>
+          </div>
+          <span class="sec-chip pend" id="srv-chip"><span class="mi xxs">pending</span> Not configured</span>
+          <span class="mi sec-chevron open" id="chev-srv">expand_more</span>
+        </div>
+
+        <div class="sec-body" id="srv-body">
+          <p style="font-size:11px;color:#6b7280;margin-bottom:12px">
+            For each environment, explicitly choose <strong>No servers</strong> or list the source server hostnames.
+          </p>
+          <div class="env-grid">
+
+            <!-- DEV/NP — has servers -->
+            <div class="env-col">
+              <div class="env-bar">
+                <span class="env-name"><span class="env-dot" style="background:#60a5fa"></span>DEV / NP</span>
+                <div class="choice-toggle">
+                  <button class="choice-btn" onclick="setEnv('dev', true)" id="dev-none">
+                    <span class="mi xxs">block</span> No servers
+                  </button>
+                  <span class="choice-divider"></span>
+                  <button class="choice-btn active-servers" onclick="setEnv('dev', false)" id="dev-srv">
+                    <span class="mi xxs">dns</span> Add servers
+                  </button>
+                </div>
+              </div>
+              <div class="env-body" id="dev-list">
+                <div class="srv-row">
+                  <input value="web-auth-01.internal.corp" placeholder="hostname or IP">
+                  <button class="srv-rm" onclick="rmSrv(this)"><span class="mi xxs">close</span></button>
+                </div>
+                <div class="srv-row">
+                  <input value="web-auth-02.internal.corp" placeholder="hostname or IP">
+                  <button class="srv-rm" onclick="rmSrv(this)"><span class="mi xxs">close</span></button>
+                </div>
+                <button class="add-srv-btn" onclick="addSrv('dev-list')">
+                  <span class="mi xxs">add</span> Add server
+                </button>
+              </div>
+              <div class="env-body" style="display:none" id="dev-none-body">
+                <div class="no-srv-badge"><span class="mi xs">block</span> No source servers — explicitly confirmed</div>
+              </div>
+              <div class="env-body" style="display:none" id="dev-unset-body">
+                <p class="env-empty">Select an option above to configure.</p>
+              </div>
+            </div>
+
+            <!-- STAGE — no servers -->
+            <div class="env-col">
+              <div class="env-bar">
+                <span class="env-name"><span class="env-dot" style="background:#fbbf24"></span>Stage</span>
+                <div class="choice-toggle">
+                  <button class="choice-btn active-none" onclick="setEnv('stage', true)" id="stage-none">
+                    <span class="mi xxs">block</span> No servers
+                  </button>
+                  <span class="choice-divider"></span>
+                  <button class="choice-btn" onclick="setEnv('stage', false)" id="stage-srv">
+                    <span class="mi xxs">dns</span> Add servers
+                  </button>
+                </div>
+              </div>
+              <div class="env-body" id="stage-list" style="display:none"></div>
+              <div class="env-body" id="stage-none-body">
+                <div class="no-srv-badge"><span class="mi xs">block</span> No source servers — explicitly confirmed</div>
+              </div>
+              <div class="env-body" style="display:none" id="stage-unset-body">
+                <p class="env-empty">Select an option above to configure.</p>
+              </div>
+            </div>
+
+            <!-- PROD — unconfigured -->
+            <div class="env-col">
+              <div class="env-bar">
+                <span class="env-name"><span class="env-dot" style="background:#f87171"></span>Production</span>
+                <div class="choice-toggle">
+                  <button class="choice-btn" onclick="setEnv('prod', true)" id="prod-none">
+                    <span class="mi xxs">block</span> No servers
+                  </button>
+                  <span class="choice-divider"></span>
+                  <button class="choice-btn" onclick="setEnv('prod', false)" id="prod-srv">
+                    <span class="mi xxs">dns</span> Add servers
+                  </button>
+                </div>
+              </div>
+              <div class="env-body" id="prod-list" style="display:none"></div>
+              <div class="env-body" id="prod-none-body" style="display:none">
+                <div class="no-srv-badge"><span class="mi xs">block</span> No source servers — explicitly confirmed</div>
+              </div>
+              <div class="env-body" id="prod-unset-body">
+                <p class="env-empty">Select an option above to configure.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end form-right -->
+  </div><!-- end body -->
+
+  <!-- ── Footer ── -->
+  <div class="dialog-footer">
+    <div style="font-size:12px;color:#6b7280">
+      <span style="color:#16a34a;font-weight:600">1</span> ready ·
+      <span style="color:#f59e0b;font-weight:600">1</span> warnings ·
+      <span style="color:#ef4444;font-weight:600">1</span> errors
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-ghost">Cancel</button>
+      <button class="btn-submit" disabled>
+        <span class="mi xs">rocket_launch</span> Initialize Apps
+      </button>
+    </div>
+  </div>
+
+</div><!-- end dialog -->
+
+<script>
+  // ── Section collapse/expand ──
+  function toggleSec(id) {
+    const body  = document.getElementById(id + '-body');
+    const chev  = document.getElementById('chev-' + id);
+    const head  = chev.closest('.sec-head');
+    const open  = !body.classList.contains('hidden-body');
+    if (open) {
+      body.style.display = 'none';
+      chev.classList.remove('open');
+      head.classList.remove('open');
+    } else {
+      body.style.display = '';
+      chev.classList.add('open');
+      head.classList.add('open');
+    }
+    body.classList.toggle('hidden-body');
+  }
+
+  // ── Env toggle (Migration servers) ──
+  const envState = { dev: 'servers', stage: 'none', prod: 'unset' };
+
+  function setEnv(env, noServers) {
+    const choice = noServers ? 'none' : 'servers';
+    envState[env] = choice;
+
+    // Reset buttons
+    const noneBtn = document.getElementById(env + '-none');
+    const srvBtn  = document.getElementById(env + '-srv');
+    noneBtn.className = 'choice-btn' + (choice === 'none' ? ' active-none' : '');
+    srvBtn.className  = 'choice-btn' + (choice === 'servers' ? ' active-servers' : '');
+
+    // Show/hide panels
+    const listEl  = document.getElementById(env + '-list');
+    const noneEl  = document.getElementById(env + '-none-body');
+    const unsetEl = document.getElementById(env + '-unset-body');
+
+    listEl.style.display  = choice === 'servers' ? 'flex' : 'none';
+    if (choice === 'servers') { listEl.style.flexDirection = 'column'; listEl.style.gap = '7px'; }
+    noneEl.style.display  = choice === 'none'    ? '' : 'none';
+    unsetEl.style.display = 'none';
+
+    // Ensure at least one empty row when switching to servers
+    if (choice === 'servers' && listEl.querySelectorAll('.srv-row').length === 0) {
+      addSrv(env + '-list');
+    }
+
+    updateSrvChip();
+  }
+
+  function updateSrvChip() {
+    const chip = document.getElementById('srv-chip');
+    const allSet = Object.values(envState).every(s => s !== 'unset');
+    if (allSet) {
+      chip.className = 'sec-chip ok';
+      chip.innerHTML = '<span class="mi xxs">check_circle</span> Configured';
+    } else {
+      chip.className = 'sec-chip pend';
+      chip.innerHTML = '<span class="mi xxs">pending</span> Not configured';
+    }
+  }
+
+  // ── Server list helpers ──
+  function addSrv(listId) {
+    const list = document.getElementById(listId);
+    const addBtn = list.querySelector('.add-srv-btn');
+    const row = document.createElement('div');
+    row.className = 'srv-row';
+    row.innerHTML = `<input placeholder="hostname or IP"><button class="srv-rm" onclick="rmSrv(this)"><span class="mi xxs">close</span></button>`;
+    list.insertBefore(row, addBtn);
+    row.querySelector('input').focus();
+  }
+
+  function rmSrv(btn) {
+    btn.closest('.srv-row').remove();
+  }
+
+  // ── IAM chip input ──
+  function onIamKey(e) {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const input = e.target;
+      const val = input.value.trim().replace(/,$/, '');
+      if (!val) return;
+      const wrap = document.getElementById('iam-wrap');
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.innerHTML = `${val} <button onclick="removeChip(this, event)">×</button>`;
+      wrap.insertBefore(chip, input);
+      input.value = '';
+    }
+  }
+
+  function removeChip(btn, e) {
+    e.stopPropagation();
+    btn.closest('.chip').remove();
+    checkUnity();
+  }
+
+  // ── Unity section validation ──
+  function checkUnity() {
+    const chip = document.getElementById('unity-chip');
+    const projectInput = document.querySelector('#unity-body .field-input.err');
+    if (projectInput) {
+      chip.className = 'sec-chip err';
+      chip.innerHTML = '<span class="mi xxs">error</span> Required fields missing';
+    } else {
+      chip.className = 'sec-chip ok';
+      chip.innerHTML = '<span class="mi xxs">check_circle</span> Complete';
+    }
+  }
+
+  // ── P/NP toggle disables Stage account ──
+  function toggleStage() {
+    const pnp = document.getElementById('pnp-chk').checked;
+    const stageInput = document.getElementById('stage-acct');
+    stageInput.disabled = pnp;
+    if (pnp) stageInput.value = '';
+  }
+</script>
+</body>
+</html>

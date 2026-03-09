@@ -241,7 +241,15 @@ const PREPARE_CONFIGS: Record<PrepareType, PrepareConfig> = {
                       <div class="grid grid-cols-3 gap-4 text-sm ml-12">
                         <div>
                           <span class="text-gray-500 font-medium">Unity Project</span>
-                          <p class="text-gray-900">{{ app.cloudNextMetadata?.unityProjectName || '-' }}</p>
+                          <p class="text-gray-900">{{ app.cloudNextMetadata?.unity?.projectName || '-' }}</p>
+                        </div>
+                        <div>
+                          <span class="text-gray-500 font-medium">Short Code</span>
+                          <p class="text-gray-900">{{ app.cloudNextMetadata?.unity?.projectShortCode || '-' }}</p>
+                        </div>
+                        <div>
+                          <span class="text-gray-500 font-medium">Artifactory Namespace</span>
+                          <p class="text-gray-900">{{ app.cloudNextMetadata?.unity?.artifactoryNameSpace || '-' }}</p>
                         </div>
                         <div>
                           <span class="text-gray-500 font-medium">AWS Regions</span>
@@ -252,26 +260,30 @@ const PREPARE_CONFIGS: Record<PrepareType, PrepareConfig> = {
                           <p class="text-gray-900">{{ app.cloudNextMetadata?.ou || '-' }}</p>
                         </div>
                         <div>
-                          <span class="text-gray-500 font-medium">Dev/NP Account</span>
-                          <p class="text-gray-900">{{ app.cloudNextMetadata?.awsAccounts?.devNp || '-' }}</p>
+                          <span class="text-gray-500 font-medium">DEV/NP Account</span>
+                          <p class="text-gray-900">{{ app.cloudNextMetadata?.awsAccountNames?.['DEV/NP'] || '-' }}</p>
                         </div>
-                        @if (!app.cloudNextMetadata?.isPNpAccount) {
+                        @if (!app.cloudNextMetadata?.isPnpAccount) {
                           <div>
                             <span class="text-gray-500 font-medium">QA Account</span>
-                            <p class="text-gray-900">{{ app.cloudNextMetadata?.awsAccounts?.qa || '-' }}</p>
+                            <p class="text-gray-900">{{ app.cloudNextMetadata?.awsAccountNames?.['QA'] || '-' }}</p>
                           </div>
                         }
                         <div>
-                          <span class="text-gray-500 font-medium">Prod Account</span>
-                          <p class="text-gray-900">{{ app.cloudNextMetadata?.awsAccounts?.prod || '-' }}</p>
+                          <span class="text-gray-500 font-medium">PROD Account</span>
+                          <p class="text-gray-900">{{ app.cloudNextMetadata?.awsAccountNames?.['PROD'] || '-' }}</p>
                         </div>
                         <div>
                           <span class="text-gray-500 font-medium">CIDR Size</span>
-                          <p class="text-gray-900">{{ app.cloudNextMetadata?.ciorSize ? '/' + app.cloudNextMetadata.ciorSize : '-' }}</p>
+                          <p class="text-gray-900">{{ app.cloudNextMetadata?.cidrSize ? '/' + app.cloudNextMetadata.cidrSize : '-' }}</p>
+                        </div>
+                        <div>
+                          <span class="text-gray-500 font-medium">Number of AZs</span>
+                          <p class="text-gray-900">{{ app.cloudNextMetadata?.numberOfAzs ?? '-' }}</p>
                         </div>
                         <div>
                           <span class="text-gray-500 font-medium">Account Type</span>
-                          <p class="text-gray-900">{{ app.cloudNextMetadata?.isPNpAccount ? 'P_NP (Dev → Prod)' : 'Standard (Dev → QA → Prod)' }}</p>
+                          <p class="text-gray-900">{{ app.cloudNextMetadata?.isPnpAccount ? 'P_NP (Dev → Prod)' : 'Standard (Dev → QA → Prod)' }}</p>
                         </div>
                         <div>
                           <span class="text-gray-500 font-medium">Shared Account</span>
